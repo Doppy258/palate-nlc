@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+/* Palate design system. Light mode only, locked across every screen.
+   Warm bone canvas, charcoal ink (never pure black), single ember accent. */
+@theme {
+  --color-canvas: #FBFBFA;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #F9F9F8;
+  --color-line: #EAEAEA;
+  --color-line-soft: rgba(42, 42, 40, 0.06);
+
+  --color-ink: #2A2A28;
+  --color-ink-soft: #787774;
+  --color-ink-faint: #A6A39E;
+
+  --color-ember: #B8472A;
+  --color-ember-hover: #9F3D22;
+  --color-ember-tint: #FBEDE7;
+  --color-ember-ring: #F1D2C5;
+
+  --color-amber: #C99A3B;
+  --color-amber-tint: #FBF3DB;
+  --color-blue-tint: #E1F3FE;
+  --color-green-tint: #EDF3EC;
+
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SF Mono", monospace;
+
+  --radius-card: 12px;
+  --radius-ctl: 8px;
+
+  --shadow-soft: 0 1px 2px rgba(42, 42, 40, 0.03), 0 1px 1px rgba(42, 42, 40, 0.02);
+  --shadow-lift: 0 2px 8px rgba(42, 42, 40, 0.045);
+  --shadow-pop: 0 12px 40px rgba(42, 42, 40, 0.10), 0 2px 8px rgba(42, 42, 40, 0.04);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  * {
+    border-color: var(--color-line);
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv01", "ss01";
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-ember-tint);
+    color: var(--color-ember-hover);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ember);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* Numerals, scores, codes: tabular mono. */
+  .tnum {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  /* Hairline that respects retina. */
+  .hairline {
+    box-shadow: inset 0 -1px 0 var(--color-line);
+  }
+}
+
+/* Honor reduced motion globally as a safety net. Component-level
+   useReducedMotion handles the choreography; this catches stragglers. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
