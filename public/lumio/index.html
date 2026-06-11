@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lumio — Know exactly where your money goes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+
+    <nav class="nav glass" id="nav">
+      <div class="bb-wrap" aria-hidden="true">
+        <div class="bb-beam bb-beam-1"></div>
+        <div class="bb-beam bb-beam-2"></div>
+      </div>
+      <a class="brand" href="#">
+        <svg viewBox="0 0 84 21" fill="currentColor"><use href="./assets/lumio-white.svg#root" /></svg>
+        <span style="display:none">Lumio</span>
+      </a>
+      <div class="links">
+        <a href="#">About</a><a href="#">Product</a><a href="#">Integrations</a><a href="#">Pricing</a
+        ><a href="#">Blog</a>
+      </div>
+      <div class="right">
+        <a class="signin" href="#">Sign In</a>
+        <button class="cta">
+          <div class="bb-wrap" aria-hidden="true">
+            <div class="bb-beam bb-beam-1"></div>
+            <div class="bb-beam bb-beam-2"></div>
+          </div>
+          Get Started
+        </button>
+        <button class="nav__burger" id="navBurger" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+
+
+    <div class="nav__drawer" id="navDrawer">
+      <button class="drawer-close" id="drawerClose">✕</button>
+      <a href="#">About</a>
+      <a href="#">Product</a>
+      <a href="#">Integrations</a>
+      <a href="#">Pricing</a>
+      <a href="#">Blog</a>
+      <a href="#" style="opacity:.7;font-size:20px">Sign In</a>
+    </div>
+
+
+    <div class="curtain-spacer" aria-hidden="true"></div>
+    <div class="curtain" id="curtain" data-screen-label="01 Hero">
+      <div class="curtain__bg" aria-hidden="true"></div>
+      <div class="curtain__hero-logo" id="introCenterLogo" aria-hidden="true">
+        <svg viewBox="0 0 84 21" fill="currentColor"><use href="#lumio-mark" /></svg>
+      </div>
+      <video class="curtain__video" autoplay muted loop playsinline preload="auto">
+        <source src="./assets/screen1-glass.mp4" type="video/mp4" />
+      </video>
+      <div class="curtain__overlay"></div>
+      <div class="curtain__tint" aria-hidden="true"></div>
+
+      <section class="hero">
+        <div class="pill">
+          <div class="bb-wrap" aria-hidden="true">
+            <div class="bb-beam bb-beam-1"></div>
+            <div class="bb-beam bb-beam-2"></div>
+          </div>
+          <span class="new">NEW</span><span class="label">Runway forecast</span>
+        </div>
+        <h1 style="line-height: 1.06; padding: 0px; font-size: 60px; text-align: center">
+          <span class="line line1" style="margin: 0px">Know Exactly Where Your</span
+          ><span
+            class="line line2"
+            style="font-weight: 400; line-height: 1; letter-spacing: -1.2px; margin: 0px; width: 700px"
+            >Money Goes.&nbsp;<span class="it">Before It&rsquo;s Gone.</span></span
+          >
+        </h1>
+        <p class="sub">
+          <span class="sub-line">Connect Stripe, QuickBooks, and your bank in 2 minutes.</span
+          ><span class="sub-line">Lumio's AI watches your numbers 24/7 and tells you exactly</span
+          ><span class="sub-line">what's happening before it becomes a problem</span>
+        </p>
+        <div class="ctas">
+          <button class="btn primary" style="padding: 0px 16px; letter-spacing: -0.9px">
+            <div class="bb-wrap" aria-hidden="true">
+              <div class="bb-beam bb-beam-1"></div>
+              <div class="bb-beam bb-beam-2"></div>
+            </div>
+            Connect your Accounts
+            <img
+              src="./assets/arrows-double-sw-ne.png"
+              alt=""
+              style="width:18px;height:18px;flex-shrink:0;filter:brightness(0) invert(1)"
+            />
+          </button>
+          <button class="btn ghost" style="letter-spacing: -0.9px">
+            <div class="bb-wrap" aria-hidden="true">
+              <div class="bb-beam bb-beam-1"></div>
+              <div class="bb-beam bb-beam-2"></div>
+            </div>
+            See a Demo
+          </button>
+        </div>
+      </section>
+
+
+      <div class="browser" aria-hidden="true" style="margin: 0px; font-weight: 400; width: 1224px">
+        <div class="bb-wrap" aria-hidden="true">
+          <div class="bb-beam bb-beam-1"></div>
+          <div class="bb-beam bb-beam-2"></div>
+        </div>
+        <div class="browser__chrome">
+          <div class="browser__nav">
+            <img src="./assets/Navegation.svg" alt="" style="height:14px;width:auto;opacity:.85" />
+          </div>
+          <div class="browser__url">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              style="position:absolute;left:8px;top:50%;transform:translateY(-50%);width:10.994px;height:10.994px;flex-shrink:0"
+            >
+              <rect x="0.5" y="0.5" width="10.9941" height="10.9941" rx="5.49707" stroke="white" />
+              <path d="M3.39221 5.92828L8.60089 5.92828" stroke="white" stroke-linecap="round" />
+              <path d="M5.99689 3.39343L5.99689 8.60211" stroke="white" stroke-linecap="round" /></svg
+            ><img src="./assets/Candado.svg" alt="" style="height:10px;width:auto;opacity:.85" /> app.lumio.ai / overview
+          </div>
+          <div class="browser__icons">
+            <img src="./assets/Options.svg" alt="" style="height:16px;width:auto;opacity:.85" />
+          </div>
+        </div>
+        <div class="dashboard">
+          <aside class="sidebar" style="border-width: 0px 1px 0px 0px; padding: 16px; margin: 0px">
+            <div class="agency">
+              <div
+                class="agency__logo"
+                style="display:flex;width:32px;height:32px;padding:0;align-items:center;justify-content:center;border-radius:8px;background:rgba(14,10,7,.10);border:1px solid rgba(14,10,7,.12);overflow:hidden"
+              >
+                <img src="./assets/Frame2147223577.png" alt="Lumio" style="width:100%;height:100%;object-fit:contain" />
+              </div>
+              <div class="agency__meta">
+                <div class="k">AGENCY</div>
+                <div class="n">Lumio Team</div>
+              </div>
+              <div class="agency__unfold">
+                <img src="./assets/Unfold_More.svg" alt="" style="width:16px;height:16px;object-fit:contain;opacity:.5" />
+              </div>
+            </div>
+            <h6>MAIN MENU</h6>
+            <div class="menu">
+              <a class="active" href="#"
+                ><img
+                  src="./assets/material-symbols-light_home-rounded.svg"
+                  alt=""
+                  style="width:14px;height:14px;display:inline-block;vertical-align:middle"
+                />
+                Overview</a
+              >
+              <a href="#"
+                ><img
+                  src="./assets/material-symbols-light_home-rounded_1.svg"
+                  alt=""
+                  style="width:14px;height:14px;display:inline-block;vertical-align:middle"
+                />
+                Revenue</a
+              >
+              <a href="#"
+                ><img
+                  src="./assets/material-symbols-light_home-rounded_1.svg"
+                  alt=""
+                  style="width:14px;height:14px;display:inline-block;vertical-align:middle"
+                />
+                Expenses</a
+              >
+              <a href="#"
+                ><img
+                  src="./assets/material-symbols-light_home-rounded_1.svg"
+                  alt=""
+                  style="width:14px;height:14px;display:inline-block;vertical-align:middle"
+                />
+                Runway</a
+              >
+            </div>
+          </aside>
+          <div class="main">
+            <div class="breadcrumbs" style="gap: 6px">
+              <span>Dashboard</span> <span>›</span> <strong>Overview</strong>
+            </div>
+            <div class="welcome">Welcome back, David</div>
+            <div class="kpis">
+              <div class="kpi">
+                <div class="inner">
+                  <div>
+                    <div class="label">MRP</div>
+                    <div class="val" style="margin-top:12px">$94,280</div>
+                    <div class="desc">vs $79,620 last month</div>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="44" height="49" viewBox="0 0 44 49" fill="none">
+                    <path d="M1 33L1 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M8 0L8 49" stroke="#0E0A07" stroke-width="2" />
+                    <path d="M15 20L15 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M22 12L22 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M29 30L29 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M36 20L36 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M43 16L43 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                  </svg>
+                </div>
+                <div class="foot">
+                  <svg
+                    class="qmark"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    stroke="rgba(14,10,7,.35)"
+                    stroke-width="1.2"
+                    width="14"
+                    height="14"
+                  >
+                    <circle cx="7" cy="7" r="6" />
+                    <path d="M7 9.5V10m0-5.5a1.5 1.5 0 0 1 0 3" stroke-linecap="round" /></svg
+                  ><span class="mom"><span class="val">18.4%</span> <span class="lbl">MoM</span></span>
+                </div>
+              </div>
+              <div class="kpi">
+                <div class="inner">
+                  <div>
+                    <div class="label">NRR</div>
+                    <div class="val" style="margin-top:12px">118%</div>
+                    <div class="desc">Net revenue retention</div>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="44" height="49" viewBox="0 0 44 49" fill="none">
+                    <path d="M1 33L1 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M8 5L8 49" stroke="#0E0A07" stroke-width="2" />
+                    <path d="M15 20L15 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M22 35L22 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M29 30L29 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M36 20L36 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M43 9L43 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                  </svg>
+                </div>
+                <div class="foot">
+                  <svg
+                    class="qmark"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    stroke="rgba(14,10,7,.35)"
+                    stroke-width="1.2"
+                    width="14"
+                    height="14"
+                  >
+                    <circle cx="7" cy="7" r="6" />
+                    <path d="M7 9.5V10m0-5.5a1.5 1.5 0 0 1 0 3" stroke-linecap="round" /></svg
+                  ><span class="mom"><span class="val">4pp</span> <span class="lbl">MoM</span></span>
+                </div>
+              </div>
+              <div class="kpi">
+                <div class="inner">
+                  <div>
+                    <div class="label">NEW CUSTOMERS</div>
+                    <div class="val" style="margin-top:12px">142</div>
+                    <div class="desc">Signed this month</div>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="44" height="49" viewBox="0 0 44 49" fill="none">
+                    <path d="M1 33L1 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M8 3L8 49" stroke="#0E0A07" stroke-width="2" />
+                    <path d="M15 38L15 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M22 12L22 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M29 21L29 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M36 8L36 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                    <path d="M43 9L43 49" stroke="#0E0A07" stroke-opacity="0.2" stroke-width="2" />
+                  </svg>
+                </div>
+                <div class="foot">
+                  <svg
+                    class="qmark"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    stroke="rgba(14,10,7,.35)"
+                    stroke-width="1.2"
+                    width="14"
+                    height="14"
+                  >
+                    <circle cx="7" cy="7" r="6" />
+                    <path d="M7 9.5V10m0-5.5a1.5 1.5 0 0 1 0 3" stroke-linecap="round" /></svg
+                  ><span class="mom"><span class="val">31%</span> <span class="lbl">MoM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="curtain__edge"></div>
+    </div>
+
+
+    <main class="below">
+      <div id="fullpage">
+
+        <div class="section fp-curtain" data-anchor="hero"></div>
+
+
+        <div class="section" data-anchor="engineers">
+          <section class="sect s2" data-screen-label="02 Engineers">
+            <div class="s2-inner">
+              <div class="ovals" aria-hidden="true">
+                <div class="o"></div>
+                <div class="o" style="border-radius:0"></div>
+                <div class="o"></div>
+                <div class="o"></div>
+              </div>
+              <div class="reveal">
+                <div class="grid">
+                  <div>
+                    <span class="eyebrow"><span class="sq"></span>HOW WE THINK</span>
+                  </div>
+                  <div>
+                    <h2>We're engineers at heart<br />and builders by obsession</h2>
+                    <p class="lede">
+                      <span class="sub-line"
+                        >Lumio<sup style="font-size:.5em;letter-spacing:0">TM</sup> is built by a small team of</span
+                      ><span class="sub-line">founders who spent years watching great</span
+                      ><span class="sub-line">SaaS companies make bad financial</span
+                      ><span class="sub-line">decisions — not because they were</span
+                      ><span class="sub-line">careless, but because their tools made</span
+                      ><span class="sub-line">everything harder than it needed to be.</span
+                      ><span class="sub-line">We believe that understanding your money shouldn't</span
+                      ><span class="sub-line">require a CFO, a data team, or a PhD in spreadsheets</span>
+                    </p>
+                  </div>
+                  <div></div>
+                </div>
+              </div>
+              <div class="bottom">
+                <div class="left">
+                  <p>
+                    We believe that understanding your money shouldn't require a CFO, a data team, or a PhD in
+                    spreadsheets
+                  </p>
+                  <button class="meet">
+                    Meet the Team
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M4 10h12 M11 5l5 5-5 5" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="stats">
+                  <div class="stat violet">
+                    <div class="v" data-count="4200" data-suffix="+" data-format="int">0+</div>
+                    <div class="l">SAAS<br />COMPANIES<br />TRUST LUMIO</div>
+                  </div>
+                  <div class="stat blue">
+                    <div class="v" data-count="2.4" data-prefix="$" data-suffix="B" data-format="dec1">$0.0B</div>
+                    <div class="l">REVENUE<br />TRACKED<br />MONTHLY</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+
+        <div class="section" data-anchor="how">
+          <section class="sect s3" data-screen-label="03 How it works">
+            <div class="s3-grid-lines"><i></i><i></i><i></i><i></i></div>
+            <div class="s3-inner">
+              <div class="s3-head">
+                <span class="corner l">THREE THINGS HAPPEN THE</span>
+                <span class="corner r">MOMENT YOU CONNECT</span>
+                <div class="eyebrow"><span class="sq"></span>HOW IT WORKS</div>
+                <h2>From Raw Data to Clear<br /><span class="it">Decisions in Seconds</span></h2>
+                <p>
+                  <span class="sub-line">Most finance tools hand you more charts to interpret. Lumio does the</span
+                  ><span class="sub-line">interpreting for you connecting your accounts, watching for problems,</span
+                  ><span class="sub-line">and telling you what to do next</span>
+                </p>
+              </div>
+
+              <div class="cards3">
+
+                <div class="card3 a">
+                  <div class="conn-list">
+                    <div class="conn">
+                      <div class="bb-wrap" aria-hidden="true">
+                        <div class="bb-beam bb-beam-1"></div>
+                        <div class="bb-beam bb-beam-2"></div>
+                      </div>
+                      <div class="badge stripe">
+                        <img src="./assets/stripe-wordmark.png" alt="Stripe" />
+                      </div>
+                      <div class="meta">
+                        <div class="kicker">Revenue · Subscriptions</div>
+                        <div class="name">Stripe</div>
+                      </div>
+                      <div class="live-pill">LIVE</div>
+                    </div>
+                    <div class="conn">
+                      <div class="bb-wrap" aria-hidden="true">
+                        <div class="bb-beam bb-beam-1"></div>
+                        <div class="bb-beam bb-beam-2"></div>
+                      </div>
+                      <div class="badge qb">qb</div>
+                      <div class="meta">
+                        <div class="kicker">Expenses · Payroll · P&amp;L</div>
+                        <div class="name">QuickBooks</div>
+                      </div>
+                      <div class="live-pill">LIVE</div>
+                    </div>
+                    <div class="conn">
+                      <div class="bb-wrap" aria-hidden="true">
+                        <div class="bb-beam bb-beam-1"></div>
+                        <div class="bb-beam bb-beam-2"></div>
+                      </div>
+                      <div class="badge mercury">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                          <circle cx="12" cy="12" r="9" />
+                          <ellipse cx="12" cy="12" rx="4" ry="9" />
+                          <line x1="3" y1="12" x2="21" y2="12" />
+                        </svg>
+                      </div>
+                      <div class="meta">
+                        <div class="kicker">Cash balance · Transactions</div>
+                        <div class="name">Mercury</div>
+                      </div>
+                      <div class="live-pill">LIVE</div>
+                    </div>
+                  </div>
+                  <div class="stamp">01 — CONNECT</div>
+                </div>
+
+
+                <div class="card3 b">
+                  <div class="insight-card" id="insightCard">
+                    <div class="bb-wrap" aria-hidden="true">
+                      <div class="bb-beam bb-beam-1"></div>
+                      <div class="bb-beam bb-beam-2"></div>
+                    </div>
+                    <div class="insight-head">
+                      <div class="ic">
+                        <img src="./assets/icon-ai.svg" alt="AI" style="width:24px;height:24px" />
+                      </div>
+                      <div>
+                        <div class="k">JUST NOW</div>
+                        <div class="t">Ai Insight</div>
+                      </div>
+                    </div>
+                    <div class="insight-msg" style="padding: 50px 4px 0px">
+                      AWS spend spiked 340% on Mar 18 likely a runaway job or misconfigured autoscaler
+                    </div>
+                    <div class="anomaly">
+                      <i
+                        ><svg viewBox="0 0 14 14" fill="currentColor"><path d="M7 1 L13 13 H1 Z M7 5v4 M7 11v.5" /></svg
+                      ></i>
+                      <span>Anomaly detected</span>
+                    </div>
+                    <div class="saving">
+                      <div class="lbl">Estimated saving</div>
+                      <div class="v">$2,400 <em>/ mo</em></div>
+                    </div>
+                  </div>
+                  <div class="stamp">02 — DETECT</div>
+                </div>
+
+
+                <div class="card3 c">
+                  <div class="runway">
+                    <div class="bb-wrap" aria-hidden="true">
+                      <div class="bb-beam bb-beam-1"></div>
+                      <div class="bb-beam bb-beam-2"></div>
+                    </div>
+                    <div class="runway-head">
+                      <div class="ic">
+                        <img
+                          src="./assets/icon-cash.svg"
+                          alt="Cash"
+                          style="width:22px;height:22px;filter:invert(23%) sepia(85%) saturate(1600%) hue-rotate(209deg)"
+                        />
+                      </div>
+                      <div>
+                        <div
+                          class="k"
+                          style="font-size:10px;letter-spacing:.1em;font-weight:700;color:rgba(255,255,255,.75)"
+                        >
+                          AI PROJECTION
+                        </div>
+                        <div
+                          class="t"
+                          style="font-size:17px;letter-spacing:-0.04em;font-weight:500;color:#fff;margin-top:4px"
+                        >
+                          Cash Runway
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chart">
+                      <div class="badge">RUNWAY IMPROVING +4 MO</div>
+                      <div class="chart-dot"></div>
+                      <svg viewBox="0 0 280 140" preserveAspectRatio="none">
+                        <defs>
+                          <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#fff" stop-opacity=".25" />
+                            <stop offset="100%" stop-color="#fff" stop-opacity="0" />
+                          </linearGradient>
+                          <pattern
+                            id="hatch"
+                            width="5"
+                            height="5"
+                            patternUnits="userSpaceOnUse"
+                            patternTransform="rotate(45)"
+                          >
+                            <line x1="0" y1="0" x2="0" y2="5" stroke="rgba(255,255,255,.12)" stroke-width="1.2" />
+                          </pattern>
+                          <clipPath id="chartClip">
+                            <rect class="chart-clip-rect" x="0" y="0" width="0" height="140" />
+                          </clipPath>
+                        </defs>
+                        <g clip-path="url(#chartClip)">
+
+                          <path
+                            d="M0 110 C 30 100, 60 80, 90 70 C 120 60, 150 55, 180 35 C 210 22, 240 18, 280 16 L 280 140 L 0 140 Z"
+                            fill="url(#g1)"
+                          />
+
+                          <path
+                            d="M93 120 C 93 78, 210 68, 280 65
+                               L 280 16 C 240 18, 210 22, 180 35 C 150 55, 120 60, 93 70 L 93 120 Z"
+                            fill="url(#hatch)"
+                          />
+
+                          <path
+                            class="chart-line"
+                            d="M0 110 C 30 100, 60 80, 90 70 C 120 60, 150 55, 180 35 C 210 22, 240 18, 280 16"
+                            stroke="#fff"
+                            stroke-width="2"
+                            fill="none"
+                          />
+
+                          <path
+                            class="chart-dash"
+                            d="M93 120 C 93 78, 210 68, 280 65"
+                            stroke="rgba(255,255,255,.55)"
+                            stroke-width="1.5"
+                            fill="none"
+                            stroke-dasharray="6 4"
+                          />
+                        </g>
+                      </svg>
+                      <div class="axis">
+                        <span>JUL 01</span><span>AUG 01</span><span>OCT 01</span><span>NOV 01</span>
+                      </div>
+                    </div>
+                    <div class="runway-foot" style="margin: 20px 0px 0px">
+                      <div class="v">Sep 2026</div>
+                      <div class="d">Projected cash-out date · 18 months away</div>
+                    </div>
+                  </div>
+                  <div class="stamp">03 — FORECAST</div>
+                </div>
+              </div>
+
+              <div
+                style="text-align:center;color:rgba(255,255,255,.75);font-size:10px;letter-spacing:.1em;font-weight:700;margin-top:-32px"
+              >
+
+              </div>
+            </div>
+          </section>
+
+
+        </div>
+        <div class="section" data-anchor="integrations">
+          <section class="sect s4" data-screen-label="04 Integrations">
+            <div class="s4-grid-lines"><i></i><i></i><i></i><i></i></div>
+            <div class="s4-horiz"></div>
+            <div class="s4-inner">
+              <div class="orbit" id="orbit">
+                <div class="tile lumio g5" aria-hidden="true">
+                  <img src="./assets/Vector-logo.png" alt="Lumio" style="width:60%;height:auto;object-fit:contain" />
+                </div>
+                <div class="lumio-label" aria-hidden="true">
+                  <div class="n">Lumio</div>
+                  <div class="k">40+ INTEGRATIONS</div>
+                </div>
+
+                <div class="orbit-ring">
+
+                  <div class="tile empty g1" aria-hidden="true">
+                    <img src="./assets/notion-logo.png" alt="Notion" style="width:55%;height:auto;object-fit:contain" />
+                  </div>
+                  <div
+                    class="tile g2"
+                    data-group="a"
+                    style="background:#1AB4D7;font-style:italic;font-weight:700;font-size:24px;letter-spacing:-0.04em"
+                  >
+                    <span>xero</span>
+                  </div>
+                  <div
+                    class="tile g3"
+                    data-group="a"
+                    style="background:#635BFF;font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:30px;color:#fff"
+                  >
+                    <span>stripe</span>
+                  </div>
+
+                  <div class="tile g4" data-group="a" style="background:#4A154B">
+                    <svg viewBox="0 0 32 32" width="44" height="44" aria-hidden="true">
+                      <rect x="13" y="2" width="5" height="13" rx="2.5" fill="#E01E5A" />
+                      <rect x="13" y="17" width="5" height="13" rx="2.5" fill="#2EB67D" />
+                      <rect x="2" y="13" width="13" height="5" rx="2.5" fill="#ECB22E" />
+                      <rect x="17" y="13" width="13" height="5" rx="2.5" fill="#36C5F0" />
+                    </svg>
+                  </div>
+                  <div class="tile g6" data-group="a" style="background:#0F1A2A"><span>aws</span></div>
+
+                  <div class="tile g7" data-group="a" style="background:#2CA01C"><span>qb</span></div>
+                  <div
+                    class="tile g8"
+                    data-group="a"
+                    style="background:#F5614A;font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:30px;color:#fff"
+                  >
+                    <span>gusto</span>
+                  </div>
+                  <div class="tile empty g9" aria-hidden="true">
+                    <img src="./assets/celtic-logo.png" alt="Logo" style="width:55%;height:auto;object-fit:contain" />
+                  </div>
+
+
+                  <div
+                    class="tile g1"
+                    data-group="b"
+                    style="background:#0B2545;display:none;font-size:18px;letter-spacing:-0.03em"
+                  >
+                    <span>svb&rang;</span>
+                  </div>
+                  <div
+                    class="tile g2"
+                    data-group="b"
+                    style="background:#0F2A1F;display:none;font-family:var(--font-serif);font-style:italic;color:#FFD93D;font-size:24px"
+                  >
+                    <span>ramp</span>
+                  </div>
+                  <div class="tile g3" data-group="b" style="background:#0E0A07;display:none;font-size:18px">
+                    <span>PLAID</span>
+                  </div>
+                  <div
+                    class="tile g4"
+                    data-group="b"
+                    style="background:#0E3B2E;display:none;font-family:var(--font-serif);font-style:italic;color:#FFE5A0;font-size:26px"
+                  >
+                    <span>Relay</span>
+                  </div>
+                  <div
+                    class="tile g6"
+                    data-group="b"
+                    style="background:#F2EB16;color:#0E0A07;display:none;font-family:var(--font-serif);font-style:italic;font-size:30px"
+                  >
+                    <span>brex</span>
+                  </div>
+                  <div
+                    class="tile g7"
+                    data-group="b"
+                    style="background:#fff;color:#117ACA;display:none;font-style:italic;font-weight:700;font-size:18px"
+                  >
+                    <span>CHASE</span>
+                  </div>
+                  <div
+                    class="tile g8"
+                    data-group="b"
+                    style="background:#163300;color:#9FE870;display:none;font-family:var(--font-serif);font-style:italic;font-weight:700;font-size:34px"
+                  >
+                    <span>wise</span>
+                  </div>
+                  <div
+                    class="tile g9"
+                    data-group="b"
+                    style="background:#FF5000;color:#fff;display:none;font-weight:700;font-size:18px;letter-spacing:-0.02em"
+                  >
+                    <span>mercury</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-list" id="filters">
+                <button class="active" data-grp="a">Revenue</button>
+                <button data-grp="a">Expenses</button>
+                <button data-grp="b">Banking</button>
+                <button data-grp="a">Payroll</button>
+                <button data-grp="a">Analytics</button>
+                <button data-grp="a">Communication</button>
+              </div>
+
+              <div class="s4-bottom">
+                <div class="eyebrow"><span class="sq"></span>YOUR FINANCIAL HUB</div>
+                <h2>Your Entire Stack,<br /><span class="it">Connected in Minutes</span></h2>
+              </div>
+
+              <div class="int-pill">
+                <div class="av">
+                  <i
+                    ><svg viewBox="0 0 18 18" fill="currentColor"><path d="M9 1 L17 6 H1 Z M2 7h14v8H2z" /></svg
+                  ></i>
+                  <i
+                    ><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <rect x="2" y="2" width="6" height="6" />
+                      <rect x="10" y="10" width="6" height="6" />
+                      <path d="M8 5h2v5" /></svg
+                  ></i>
+                </div>
+                <div class="meta">
+                  <div class="t">Integrations</div>
+                  <div class="s">9 IN BANKING</div>
+                </div>
+              </div>
+
+              <div class="sync-stamp">SYNC STARTS INSTANTLY</div>
+            </div>
+          </section>
+
+
+        </div>
+      </div>
+    </main>
+
+
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="lumio-mark" viewBox="0 0 84 21">
+        <path
+          d="M 0.057 0 C 0.362 0.071 0.348 0.044 0.383 0.348 C 0.598 2.194 0.894 4.169 1.347 5.967 C 1.538 6.696 1.742 7.421 1.961 8.141 C 2.119 8.673 2.294 9.354 2.473 9.862 C 3.506 12.743 5.043 16.102 7.694 17.7 C 9.817 18.981 12.464 18.696 14.366 17.153 C 16.379 15.52 17.551 13.254 18.462 10.838 C 19.372 8.362 20.075 5.808 20.561 3.204 C 20.651 2.736 20.924 0.237 21.024 0.056 C 21.105 0.034 21.151 0.01 21.226 0.044 C 21.272 0.163 21.261 3.59 21.264 4.01 L 21.268 14.17 C 21.279 16.447 21.273 18.723 21.251 21 C 20.879 20.827 20.329 20.724 19.929 20.619 C 14.943 19.307 9.619 19.206 4.54 19.944 C 3.028 20.164 1.495 20.587 0.009 20.973 L 0 7.619 L 0.002 3.019 C 0.004 2.078 -0.013 0.928 0.057 0 Z"
+          fill="currentColor"
+        />
+        <path
+          d="M 29.826 19.25 L 29.826 3.083 L 31.878 3.083 L 31.878 17.297 L 38.724 17.297 L 38.724 19.25 L 29.826 19.25 Z"
+          fill="currentColor"
+        />
+        <path
+          d="M 43.752 19.51 C 42.942 19.51 42.209 19.315 41.553 18.924 C 40.911 18.534 40.409 17.991 40.046 17.297 C 39.697 16.588 39.523 15.778 39.523 14.867 L 39.523 7.554 L 41.47 7.554 L 41.47 14.65 C 41.47 15.228 41.581 15.735 41.805 16.169 C 42.042 16.603 42.363 16.943 42.768 17.188 C 43.186 17.434 43.661 17.557 44.191 17.557 C 44.722 17.557 45.189 17.434 45.594 17.188 C 46.013 16.943 46.334 16.588 46.557 16.125 C 46.794 15.662 46.913 15.113 46.913 14.476 L 46.913 7.554 L 48.881 7.554 L 48.881 19.25 L 46.976 19.25 L 46.976 16.971 L 47.29 17.167 C 47.025 17.905 46.571 18.483 45.929 18.903 C 45.301 19.308 44.575 19.51 43.752 19.51 Z"
+          fill="currentColor"
+        />
+        <path
+          d="M 50.851 19.25 L 50.851 7.554 L 52.756 7.554 L 52.756 9.941 L 52.484 9.572 C 52.763 8.834 53.209 8.27 53.823 7.879 C 54.438 7.489 55.128 7.293 55.896 7.293 C 56.775 7.293 57.564 7.546 58.262 8.053 C 58.974 8.559 59.462 9.225 59.727 10.049 L 59.183 10.071 C 59.476 9.159 59.972 8.472 60.669 8.009 C 61.367 7.532 62.142 7.293 62.993 7.293 C 63.775 7.293 64.48 7.481 65.108 7.857 C 65.75 8.234 66.259 8.754 66.636 9.42 C 67.013 10.085 67.201 10.838 67.201 11.677 L 67.201 19.25 L 65.233 19.25 L 65.233 12.328 C 65.233 11.677 65.122 11.127 64.898 10.679 C 64.675 10.23 64.368 9.883 63.977 9.637 C 63.6 9.376 63.154 9.246 62.637 9.246 C 62.135 9.246 61.681 9.376 61.277 9.637 C 60.886 9.883 60.572 10.237 60.334 10.7 C 60.111 11.149 59.999 11.691 59.999 12.328 L 59.999 19.25 L 58.031 19.25 L 58.031 12.328 C 58.031 11.677 57.92 11.127 57.697 10.679 C 57.473 10.23 57.166 9.883 56.775 9.637 C 56.399 9.376 55.952 9.246 55.435 9.246 C 54.933 9.246 54.479 9.376 54.075 9.637 C 53.684 9.883 53.37 10.237 53.133 10.7 C 52.909 11.149 52.798 11.691 52.798 12.328 L 52.798 19.25 L 50.851 19.25 Z"
+          fill="currentColor"
+        />
+        <path
+          d="M 68.92 19.25 L 68.92 7.554 L 70.867 7.554 L 70.867 19.25 L 68.92 19.25 Z M 68.92 5.688 L 68.92 3.083 L 70.867 3.083 L 70.867 5.688 L 68.92 5.688 Z"
+          fill="currentColor"
+        />
+        <path
+          d="M 78.201 19.51 C 77.112 19.51 76.128 19.25 75.249 18.729 C 74.37 18.194 73.672 17.463 73.155 16.538 C 72.639 15.612 72.381 14.563 72.381 13.391 C 72.381 12.219 72.632 11.178 73.134 10.266 C 73.651 9.355 74.349 8.631 75.228 8.096 C 76.107 7.561 77.098 7.293 78.201 7.293 C 79.289 7.293 80.273 7.561 81.153 8.096 C 82.032 8.617 82.723 9.333 83.225 10.244 C 83.742 11.156 84 12.205 84 13.391 C 84 14.577 83.735 15.633 83.204 16.559 C 82.674 17.471 81.969 18.194 81.09 18.729 C 80.225 19.25 79.262 19.51 78.201 19.51 Z M 78.201 17.557 C 78.899 17.557 79.527 17.377 80.085 17.015 C 80.657 16.653 81.104 16.154 81.425 15.518 C 81.76 14.881 81.927 14.172 81.927 13.391 C 81.927 12.595 81.76 11.894 81.425 11.286 C 81.104 10.664 80.657 10.172 80.085 9.81 C 79.527 9.434 78.899 9.246 78.201 9.246 C 77.489 9.246 76.847 9.434 76.275 9.81 C 75.716 10.172 75.27 10.664 74.935 11.286 C 74.6 11.894 74.432 12.595 74.432 13.391 C 74.432 14.172 74.6 14.881 74.935 15.518 C 75.27 16.154 75.716 16.653 76.275 17.015 C 76.847 17.377 77.489 17.557 78.201 17.557 Z"
+          fill="currentColor"
+        />
+      </symbol>
+    </svg>
+
+
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="lumio-mark" viewBox="0 0 84 21">
+        <path
+          d="M 0.057 0 C 0.362 0.071 0.348 0.044 0.383 0.348 C 0.598 2.194 0.894 4.169 1.347 5.967 C 1.538 6.696 1.742 7.421 1.961 8.141 C 2.119 8.673 2.294 9.354 2.473 9.862 C 3.506 12.743 5.043 16.102 7.694 17.7 C 9.817 18.981 12.464 18.696 14.366 17.153 C 16.379 15.52 17.551 13.254 18.462 10.838 C 19.372 8.362 20.075 5.808 20.561 3.204 C 20.651 2.736 20.924 0.237 21.024 0.056 C 21.105 0.034 21.151 0.01 21.226 0.044 C 21.272 0.163 21.261 3.59 21.264 4.01 L 21.268 14.17 C 21.279 16.447 21.273 18.723 21.251 21 C 20.879 20.827 20.329 20.724 19.929 20.619 C 14.943 19.307 9.619 19.206 4.54 19.944 C 3.028 20.164 1.495 20.587 0.009 20.973 L 0 7.619 L 0.002 3.019 C 0.004 2.078 -0.013 0.928 0.057 0 Z"
+          fill="currentColor"
+        />
+        <path
+          d="M 29.826 19.25 L 29.826 3.083 L 31.878 3.083 L 31.878 17.297 L 38.724 17.297 L 38.724 19.25 L 29.826 19.25 Z"
+          fill="currentColor"
+        />
+        <path
+          d="M 43.752 19.51 C 42.942 19.51 42.209 19.315 41.553 18.924 C 40.911 18.534 40.409 17.991 40.046 17.297 C 39.697 16.588 39.523 15.778 39.523 14.867 L 39.523 7.554 L 41.47 7.554 L 41.47 14.65 C 41.47 15.228 41.581 15.735 41.805 16.169 C 42.042 16.603 42.363 16.943 42.768 17.188 C 43.186 17.434 43.661 17.557 44.191 17.557 C 44.722 17.557 45.189 17.434 45.594 17.188 C 46.013 16.943 46.334 16.588 46.557 16.125 C 46.794 15.662 46.913 15.113 46.913 14.476 L 46.913 7.554 L 48.881 7.554 L 48.881 19.25 L 46.976 19.25 L 46.976 16.971 L 47.29 17.167 C 47.025 17.905 46.571 18.483 45.929 18.903 C 45.301 19.308 44.575 19.51 43.752 19.51 Z"
+          fill="currentColor"
+        />
+        <path
+          d="M 50.851 19.25 L 50.851 7.554 L 52.756 7.554 L 52.756 9.941 L 52.484 9.572 C 52.763 8.834 53.209 8.27 53.823 7.879 C 54.438 7.489 55.128 7.293 55.896 7.293 C 56.775 7.293 57.564 7.546 58.262 8.053 C 58.974 8.559 59.462 9.225 59.727 10.049 L 59.183 10.071 C 59.476 9.159 59.972 8.472 60.669 8.009 C 61.367 7.532 62.142 7.293 62.993 7.293 C 63.775 7.293 64.48 7.481 65.108 7.857 C 65.75 8.234 66.259 8.754 66.636 9.42 C 67.013 10.085 67.201 10.838 67.201 11.677 L 67.201 19.25 L 65.233 19.25 L 65.233 12.328 C 65.233 11.677 65.122 11.127 64.898 10.679 C 64.675 10.23 64.368 9.883 63.977 9.637 C 63.6 9.376 63.154 9.246 62.637 9.246 C 62.135 9.246 61.681 9.376 61.277 9.637 C 60.886 9.883 60.572 10.237 60.334 10.7 C 60.111 11.149 59.999 11.691 59.999 12.328 L 59.999 19.25 L 58.031 19.25 L 58.031 12.328 C 58.031 11.677 57.92 11.127 57.697 10.679 C 57.473 10.23 57.166 9.883 56.775 9.637 C 56.399 9.376 55.952 9.246 55.435 9.246 C 54.933 9.246 54.479 9.376 54.075 9.637 C 53.684 9.883 53.37 10.237 53.133 10.7 C 52.909 11.149 52.798 11.691 52.798 12.328 L 52.798 19.25 L 50.851 19.25 Z"
+          fill="currentColor"
+        />
+        <path
+          d="M 68.92 19.25 L 68.92 7.554 L 70.867 7.554 L 70.867 19.25 L 68.92 19.25 Z M 68.92 5.688 L 68.92 3.083 L 70.867 3.083 L 70.867 5.688 L 68.92 5.688 Z"
+          fill="currentColor"
+        />
+        <path
+          d="M 78.201 19.51 C 77.112 19.51 76.128 19.25 75.249 18.729 C 74.37 18.194 73.672 17.463 73.155 16.538 C 72.639 15.612 72.381 14.563 72.381 13.391 C 72.381 12.219 72.632 11.178 73.134 10.266 C 73.651 9.355 74.349 8.631 75.228 8.096 C 76.107 7.561 77.098 7.293 78.201 7.293 C 79.289 7.293 80.273 7.561 81.153 8.096 C 82.032 8.617 82.723 9.333 83.225 10.244 C 83.742 11.156 84 12.205 84 13.391 C 84 14.577 83.735 15.633 83.204 16.559 C 82.674 17.471 81.969 18.194 81.09 18.729 C 80.225 19.25 79.262 19.51 78.201 19.51 Z M 78.201 17.557 C 78.899 17.557 79.527 17.377 80.085 17.015 C 80.657 16.653 81.104 16.154 81.425 15.518 C 81.76 14.881 81.927 14.172 81.927 13.391 C 81.927 12.595 81.76 11.894 81.425 11.286 C 81.104 10.664 80.657 10.172 80.085 9.81 C 79.527 9.434 78.899 9.246 78.201 9.246 C 77.489 9.246 76.847 9.434 76.275 9.81 C 75.716 10.172 75.27 10.664 74.935 11.286 C 74.6 11.894 74.432 12.595 74.432 13.391 C 74.432 14.172 74.6 14.881 74.935 15.518 C 75.27 16.154 75.716 16.653 76.275 17.015 C 76.847 17.377 77.489 17.557 78.201 17.557 Z"
+          fill="currentColor"
+        />
+      </symbol>
+    </svg>
+
+    <script src="script.js"></script>
+    <script>
+      (function () {
+        function goto(hash) {
+          try {
+            (window.top || window).location.hash = hash;
+          } catch (e) {
+            window.location.hash = hash;
+          }
+        }
+        function wire(selector, hash) {
+          document.querySelectorAll(selector).forEach(function (el) {
+            el.style.cursor = "pointer";
+            el.addEventListener("click", function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              goto(hash);
+            });
+          });
+        }
+        function init() {
+          wire(".cta", "#/onboarding");
+          wire(".btn.primary", "#/onboarding");
+          wire(".signin", "#/discover");
+        }
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", init);
+        } else {
+          init();
+        }
+      })();
+    </script>
+  </body>
+</html>

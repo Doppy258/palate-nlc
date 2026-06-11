@@ -12,6 +12,7 @@ import Passport from './screens/Passport'
 import Bites from './screens/Bites'
 import Profile from './screens/Profile'
 import OwnerDashboard from './screens/owner/OwnerDashboard'
+import Landing from './screens/Landing'
 
 const NAV_PATHS = ['/discover', '/rank', '/passport', '/profile', '/bites']
 const showNav = (path: string) => NAV_PATHS.includes(path) || path.startsWith('/r/')
@@ -20,13 +21,20 @@ export default function App() {
   const onboarded = useStore((s) => s.onboarded)
   const location = useLocation()
 
+  if (location.pathname === '/') {
+    return (
+      <IconContext.Provider value={{ size: 18, weight: 'regular' }}>
+        <Landing />
+      </IconContext.Provider>
+    )
+  }
+
   return (
     <IconContext.Provider value={{ size: 18, weight: 'regular' }}>
       <PhoneFrame>
         <div className="flex h-full flex-col">
           <div className="relative min-h-0 flex-1">
             <Routes>
-              <Route path="/" element={<Navigate to={onboarded ? '/discover' : '/onboarding'} replace />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/discover" element={<Discover />} />
               <Route path="/rank" element={<Rank />} />
@@ -35,7 +43,7 @@ export default function App() {
               <Route path="/bites" element={<Bites />} />
               <Route path="/r/:id" element={<RestaurantDetail />} />
               <Route path="/owner" element={<OwnerDashboard />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<Navigate to={onboarded ? '/discover' : '/onboarding'} replace />} />
             </Routes>
           </div>
           {showNav(location.pathname) && <BottomNav />}
