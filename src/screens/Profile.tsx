@@ -56,128 +56,136 @@ export default function Profile() {
         />
       }
     >
-      <div className="space-y-7 px-4 pb-8 pt-3">
-        {/* Identity */}
-        <Reveal>
-          <div className="flex items-center gap-4">
-            <Avatar seed={store.avatarSeed} name={store.name} size={64} className="ring-2 ring-surface shadow-soft" />
-            <div className="min-w-0 flex-1">
-              <h1 className="text-xl font-semibold tracking-tight text-ink">{store.name}</h1>
-              <div className="mt-0.5 flex items-center gap-2 text-[13px] text-ink-soft">
-                <span>{level.def.name}</span>
-                <span className="inline-flex items-center gap-1 rounded-full bg-ink px-2 py-0.5 text-[11px] font-semibold text-white">
-                  <Lightning size={11} weight="fill" />
-                  <span className="tnum">{store.xp.toLocaleString()}</span>
-                </span>
-              </div>
-              <div className="mt-2">
-                <ProgressBar value={level.progress * 100} />
-              </div>
-            </div>
-          </div>
-        </Reveal>
-
-        {/* Stats */}
-        <div className="grid grid-cols-4 gap-2.5">
-          {stats.map((s) => (
-            <div key={s.label} className="rounded-card border border-line bg-surface px-2 py-3 text-center">
-              <div className="tnum text-xl font-semibold text-ink">{s.value}</div>
-              <div className="text-[11px] text-ink-soft">{s.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Favourite cuisines */}
-        {favCuisines.length > 0 && (
-          <section>
-            <h2 className="mb-2.5 text-[13px] font-semibold uppercase tracking-wide text-ink-faint">Favorite cuisines</h2>
-            <div className="flex flex-wrap gap-2">
-              {favCuisines.map((c) => (
-                <Chip key={c} tone="accent">
-                  {c}
-                </Chip>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Tier summary */}
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold tracking-tight text-ink">Your tier list</h2>
-            <button onClick={() => navigate('/rank')} className="inline-flex items-center gap-0.5 text-[13px] font-semibold text-ember">
-              Open <CaretRight size={14} />
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {TIER_ORDER.map((t) => (
-              <div
-                key={t}
-                className="flex items-center gap-2 rounded-card border border-line bg-surface px-3 py-2"
-              >
-                <TierBadge tier={t} size="sm" />
-                <span className="tnum text-[13px] font-semibold text-ink">{tiers[t].length}</span>
-              </div>
-            ))}
-            <div className="flex items-center gap-2 rounded-card border border-line bg-surface px-3 py-2">
-              <span
-                className="rounded-md px-1.5 py-0.5 text-[10px] font-semibold"
-                style={{ background: TIER_STYLE['want-to-try'].bg, color: TIER_STYLE['want-to-try'].fg, boxShadow: `inset 0 0 0 1px ${TIER_STYLE['want-to-try'].ring}` }}
-              >
-                WTT
-              </span>
-              <span className="tnum text-[13px] font-semibold text-ink">{tiers['want-to-try'].length}</span>
-            </div>
-          </div>
-        </section>
-
-        {/* Want to try */}
-        {saved.length > 0 && (
-          <section>
-            <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Want to Try</h2>
-            <div className="-mx-4 flex gap-3 overflow-x-auto px-4 no-scrollbar">
-              {saved.map((r) => (
-                <button key={r.id} onClick={() => navigate(`/r/${r.id}`)} className="w-28 shrink-0 active:scale-95">
-                  <img src={photo(r.photoSeeds[0], 240, 200)} alt={r.name} className="h-24 w-28 rounded-card bg-surface-2 object-cover" />
-                  <div className="mt-1.5 truncate text-[12.5px] font-medium text-ink">{r.name}</div>
-                  <div className="text-[11px] text-ink-soft">{r.cuisine}</div>
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Friends */}
-        <section>
-          <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Friends</h2>
-          <div className="space-y-2.5">
-            {FRIENDS.map((f) => (
-              <div key={f.id} className="flex items-center gap-3 rounded-card border border-line bg-surface p-3">
-                <Avatar seed={f.avatarSeed} name={f.name} size={40} />
+      <div className="px-4 pb-8 pt-3 lg:mx-auto lg:max-w-5xl lg:px-8 lg:pt-6">
+        <div className="lg:grid lg:grid-cols-[1.15fr_1fr] lg:gap-x-8">
+          {/* Primary column */}
+          <div className="space-y-7">
+            {/* Identity */}
+            <Reveal>
+              <div className="flex items-center gap-4">
+                <Avatar seed={store.avatarSeed} name={store.name} size={64} className="ring-2 ring-surface shadow-soft" />
                 <div className="min-w-0 flex-1">
-                  <div className="text-[13.5px] font-semibold text-ink">{f.name}</div>
-                  <div className="truncate text-[12px] text-ink-soft">{friendActivity(f)}</div>
+                  <h1 className="text-xl font-semibold tracking-tight text-ink">{store.name}</h1>
+                  <div className="mt-0.5 flex items-center gap-2 text-[13px] text-ink-soft">
+                    <span>{level.def.name}</span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-ink px-2 py-0.5 text-[11px] font-semibold text-white">
+                      <Lightning size={11} weight="fill" />
+                      <span className="tnum">{store.xp.toLocaleString()}</span>
+                    </span>
+                  </div>
+                  <div className="mt-2">
+                    <ProgressBar value={level.progress * 100} />
+                  </div>
                 </div>
-                <span className="rounded-full bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-ink-soft">Following</span>
               </div>
-            ))}
-          </div>
-        </section>
+            </Reveal>
 
-        {/* Badges link + reset */}
-        <div className="flex items-center justify-between rounded-card border border-line bg-surface px-4 py-3.5">
-          <div>
-            <div className="text-[13.5px] font-semibold text-ink">Badges earned</div>
-            <div className="tnum text-[12px] text-ink-soft">{badgesEarned} of {BADGES.length}</div>
+            {/* Stats */}
+            <div className="grid grid-cols-4 gap-2.5">
+              {stats.map((s) => (
+                <div key={s.label} className="rounded-card border border-line bg-surface px-2 py-3 text-center">
+                  <div className="tnum text-xl font-semibold text-ink">{s.value}</div>
+                  <div className="text-[11px] text-ink-soft">{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Favourite cuisines */}
+            {favCuisines.length > 0 && (
+              <section>
+                <h2 className="mb-2.5 text-[13px] font-semibold uppercase tracking-wide text-ink-faint">Favorite cuisines</h2>
+                <div className="flex flex-wrap gap-2">
+                  {favCuisines.map((c) => (
+                    <Chip key={c} tone="accent">
+                      {c}
+                    </Chip>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Tier summary */}
+            <section>
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-base font-semibold tracking-tight text-ink">Your tier list</h2>
+                <button onClick={() => navigate('/rank')} className="inline-flex items-center gap-0.5 text-[13px] font-semibold text-ember">
+                  Open <CaretRight size={14} />
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {TIER_ORDER.map((t) => (
+                  <div
+                    key={t}
+                    className="flex items-center gap-2 rounded-card border border-line bg-surface px-3 py-2"
+                  >
+                    <TierBadge tier={t} size="sm" />
+                    <span className="tnum text-[13px] font-semibold text-ink">{tiers[t].length}</span>
+                  </div>
+                ))}
+                <div className="flex items-center gap-2 rounded-card border border-line bg-surface px-3 py-2">
+                  <span
+                    className="rounded-md px-1.5 py-0.5 text-[10px] font-semibold"
+                    style={{ background: TIER_STYLE['want-to-try'].bg, color: TIER_STYLE['want-to-try'].fg, boxShadow: `inset 0 0 0 1px ${TIER_STYLE['want-to-try'].ring}` }}
+                  >
+                    WTT
+                  </span>
+                  <span className="tnum text-[13px] font-semibold text-ink">{tiers['want-to-try'].length}</span>
+                </div>
+              </div>
+            </section>
+
+            {/* Want to try */}
+            {saved.length > 0 && (
+              <section>
+                <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Want to Try</h2>
+                <div className="-mx-4 flex gap-3 overflow-x-auto px-4 no-scrollbar lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-3 lg:overflow-visible lg:px-0">
+                  {saved.map((r) => (
+                    <button key={r.id} onClick={() => navigate(`/r/${r.id}`)} className="w-28 shrink-0 active:scale-95 lg:w-auto">
+                      <img src={photo(r.photoSeeds[0], 240, 200)} alt={r.name} className="h-24 w-28 rounded-card bg-surface-2 object-cover lg:h-28 lg:w-full" />
+                      <div className="mt-1.5 truncate text-[12.5px] font-medium text-ink">{r.name}</div>
+                      <div className="text-[11px] text-ink-soft">{r.cuisine}</div>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
-          <button onClick={() => navigate('/passport')} className="inline-flex items-center gap-0.5 text-[13px] font-semibold text-ember">
-            View <CaretRight size={14} />
-          </button>
+
+          {/* Secondary column */}
+          <div className="mt-7 space-y-7 lg:mt-0">
+            {/* Friends */}
+            <section>
+              <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Friends</h2>
+              <div className="space-y-2.5">
+                {FRIENDS.map((f) => (
+                  <div key={f.id} className="flex items-center gap-3 rounded-card border border-line bg-surface p-3">
+                    <Avatar seed={f.avatarSeed} name={f.name} size={40} />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[13.5px] font-semibold text-ink">{f.name}</div>
+                      <div className="truncate text-[12px] text-ink-soft">{friendActivity(f)}</div>
+                    </div>
+                    <span className="rounded-full bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-ink-soft">Following</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Badges link */}
+            <div className="flex items-center justify-between rounded-card border border-line bg-surface px-4 py-3.5">
+              <div>
+                <div className="text-[13.5px] font-semibold text-ink">Badges earned</div>
+                <div className="tnum text-[12px] text-ink-soft">{badgesEarned} of {BADGES.length}</div>
+              </div>
+              <button onClick={() => navigate('/passport')} className="inline-flex items-center gap-0.5 text-[13px] font-semibold text-ember">
+                View <CaretRight size={14} />
+              </button>
+            </div>
+
+            <Button variant="ghost" full icon={<ArrowCounterClockwise size={16} />} onClick={() => store.resetDemo()}>
+              Reset demo data
+            </Button>
+          </div>
         </div>
-
-        <Button variant="ghost" full icon={<ArrowCounterClockwise size={16} />} onClick={() => store.resetDemo()}>
-          Reset demo data
-        </Button>
       </div>
     </Screen>
   )

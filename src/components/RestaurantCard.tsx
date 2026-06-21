@@ -30,7 +30,7 @@ export function RestaurantCard({
   return (
     <article
       onClick={() => navigate(`/r/${r.id}`)}
-      className="group cursor-pointer overflow-hidden rounded-card border border-line bg-surface shadow-soft transition hover:shadow-lift active:scale-[0.995]"
+      className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-card border border-line bg-surface shadow-soft transition hover:shadow-lift active:scale-[0.995]"
     >
       <div className="relative">
         <img
@@ -64,7 +64,7 @@ export function RestaurantCard({
         </button>
       </div>
 
-      <div className="p-3.5">
+      <div className="flex flex-1 flex-col p-3.5">
         <div className="flex items-start justify-between gap-3">
           <h3 className="text-[15px] font-semibold leading-tight tracking-tight text-ink">{r.name}</h3>
           <StarRating value={r.rating} />
@@ -101,7 +101,7 @@ export function RestaurantCard({
           </div>
         )}
 
-        <div className="mt-3 flex items-center justify-between border-t border-line pt-2.5">
+        <div className="mt-3 flex items-center justify-between border-t border-line pt-2.5 lg:mt-auto">
           {savers.length > 0 ? (
             <div className="flex items-center gap-2">
               <div className="flex -space-x-2">

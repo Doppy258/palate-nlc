@@ -59,7 +59,7 @@ export default function OwnerDashboard() {
         />
       }
     >
-      <div className="px-4 pb-8 pt-3">
+      <div className="px-4 pb-8 pt-3 lg:mx-auto lg:max-w-3xl lg:px-8 lg:pt-6">
         {/* Restaurant switcher */}
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 no-scrollbar">
           {RESTAURANTS.map((x) => (
@@ -85,7 +85,7 @@ export default function OwnerDashboard() {
         </div>
 
         {/* Metrics */}
-        <div className="mt-4 grid grid-cols-3 gap-2.5">
+        <div className="mt-4 grid grid-cols-3 gap-2.5 lg:grid-cols-6">
           <Metric icon={<Eye size={16} />} label="Views" value={stats.views} />
           <Metric icon={<Heart size={16} />} label="Saves" value={stats.saves} />
           <Metric icon={<Ticket size={16} />} label="Stamps" value={stats.stamps} />
@@ -148,7 +148,7 @@ export default function OwnerDashboard() {
         </Block>
 
         {/* Slow hour + quest traffic */}
-        <div className="mt-4 grid grid-cols-1 gap-2.5">
+        <div className="mt-4 grid grid-cols-1 gap-2.5 lg:grid-cols-2">
           {r.slowHour && (
             <InfoRow
               icon={<Clock size={17} />}

@@ -47,7 +47,7 @@ export default function Rank() {
         />
       }
     >
-      <div className="px-4 pb-8 pt-3">
+      <div className="px-4 pb-8 pt-3 lg:mx-auto lg:max-w-3xl lg:px-8 lg:pt-6">
         {tab === 'h2h' && <HeadToHead pool={pool} />}
         {tab === 'mine' && <TierList tiers={personalTiers(RESTAURANTS, store)} includeWTT title="Your local food tier list" />}
         {tab === 'community' && <TierList tiers={communityTiers(RESTAURANTS, store)} title="Community ranking" />}
@@ -117,7 +117,7 @@ function HeadToHead({ pool }: { pool: Restaurant[] }) {
           transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
         >
           <h2 className="text-[19px] font-semibold leading-tight tracking-tight text-ink">{pair.q}</h2>
-          <div className="relative mt-4 space-y-3">
+          <div className="relative mt-4 space-y-3 lg:grid lg:grid-cols-2 lg:gap-5 lg:space-y-0">
             <MatchCard r={pair.a} onPick={() => choose(pair.a, pair.b)} />
             <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
               <span className="tnum inline-flex h-9 w-9 items-center justify-center rounded-full border border-line bg-surface text-[11px] font-bold uppercase text-ink-soft shadow-soft">

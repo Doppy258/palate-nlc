@@ -13,7 +13,7 @@ import {
   Star,
   Tag,
 } from '@phosphor-icons/react'
-import type { Bite, Restaurant, Review } from '../data/types'
+import type { Bite, Restaurant, Review, Tier } from '../data/types'
 import { RESTAURANTS, SEED_BITES } from '../data/seed'
 import { useStore } from '../store/useStore'
 import { dealRedeemable, dealUnlocked, restaurantDeals } from '../lib/deals'
@@ -29,7 +29,6 @@ import { Reveal } from '../components/Reveal'
 
 export default function RestaurantDetail() {
   const { id } = useParams()
-  const navigate = useNavigate()
   const store = useStore()
   const r = RESTAURANTS.find((x) => x.id === id)
 
@@ -78,184 +77,167 @@ export default function RestaurantDetail() {
         />
       }
     >
-      {/* Hero */}
-      <div className="relative">
-        <img
-          src={photo(r.photoSeeds[0], 880, 560)}
-          alt={r.name}
-          className="h-52 w-full bg-surface-2 object-cover"
-        />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/30 to-transparent" />
-        <div className="absolute bottom-3 left-4 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-surface/90 px-2 py-1 text-[11px] font-semibold text-ink-soft backdrop-blur-sm">
-            Community
-          </span>
-          <TierBadge tier={communityTier} className="ring-1 ring-white/60" />
-          {isSlowHourActive(r.slowHour) && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-surface/90 px-2.5 py-1 text-[11px] font-semibold text-ember backdrop-blur-sm">
-              <PulseDot /> Slow-hour now
+      <div className="lg:mx-auto lg:max-w-6xl lg:px-8 lg:pb-10">
+        {/* Hero */}
+        <div className="relative lg:mt-6 lg:overflow-hidden lg:rounded-card">
+          <img
+            src={photo(r.photoSeeds[0], 1280, 720)}
+            alt={r.name}
+            className="h-52 w-full bg-surface-2 object-cover lg:h-80"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/30 to-transparent" />
+          <div className="absolute bottom-3 left-4 flex items-center gap-2 lg:bottom-4 lg:left-5">
+            <span className="inline-flex items-center gap-1 rounded-full bg-surface/90 px-2 py-1 text-[11px] font-semibold text-ink-soft backdrop-blur-sm">
+              Community
             </span>
-          )}
-        </div>
-      </div>
-
-      <div className="px-4 pb-8">
-        {/* Title block */}
-        <div className="mt-4 flex items-start justify-between gap-3">
-          <div>
-            <h1 className="text-[22px] font-semibold leading-tight tracking-tight text-ink">{r.name}</h1>
-            <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-ink-soft">
-              <span>{r.cuisine}</span>
-              <Dot />
-              <span className="tnum">{PRICE_LABEL[r.priceTier]}</span>
-              <Dot />
-              <MapPin size={13} />
-              <span className="tnum">{r.distanceMi.toFixed(1)} mi</span>
-            </div>
-          </div>
-          <StarRating value={r.rating} />
-        </div>
-
-        <div className="mt-1 flex items-center gap-1.5 text-[13px]">
-          <Clock size={14} className="text-ink-faint" />
-          <span className={cn('font-medium', openStatus(r.hours) === 'Open now' ? 'text-ember' : 'text-ink-soft')}>
-            {openStatus(r.hours)}
-          </span>
-          <span className="text-ink-faint">
-            · {fmtHour(r.hours.open)} to {fmtHour(r.hours.close)}
-          </span>
-          <span className="text-ink-faint">· {r.reviewCount} reviews</span>
-        </div>
-
-        {/* Tier row */}
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <TierTile label="Community tier" tier={communityTier} />
-          {myTier ? (
-            <TierTile label="Your tier" tier={myTier} />
-          ) : (
-            <button
-              onClick={() => store.addToTier(r.id)}
-              className="flex flex-col items-start justify-center rounded-card border border-dashed border-line bg-surface-2 px-4 py-3 text-left transition hover:bg-surface active:scale-[0.99]"
-            >
-              <span className="text-[11px] uppercase tracking-wide text-ink-faint">Your tier</span>
-              <span className="mt-0.5 text-sm font-semibold text-ember">Add to tier list</span>
-            </button>
-          )}
-        </div>
-
-        {/* Tags */}
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {r.tags.map((t) => (
-            <Chip key={t} tone="muted">
-              {t}
-            </Chip>
-          ))}
-        </div>
-
-        {/* Primary actions */}
-        <div className="mt-5 space-y-2.5">
-          {!visited ? (
-            <Button full size="lg" icon={<ShieldCheck size={18} weight="fill" />} onClick={() => setCheckInOpen(true)}>
-              Check in with code
-            </Button>
-          ) : (
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-ctl bg-ember-tint text-sm font-semibold text-ember">
-                <SealCheck size={17} weight="fill" /> Stamp collected
-              </div>
-              <Button className="flex-1" variant="secondary" size="lg" onClick={() => setReviewOpen(true)}>
-                Leave a review
-              </Button>
-            </div>
-          )}
-          <div className="flex items-center gap-2.5">
-            <Button
-              variant="secondary"
-              className="flex-1"
-              icon={<Heart size={17} weight={saved ? 'fill' : 'regular'} className={saved ? 'text-ember' : ''} />}
-              onClick={() => store.toggleSave(r.id)}
-            >
-              {saved ? 'Saved' : 'Save'}
-            </Button>
-            <Button
-              variant="secondary"
-              className="flex-1"
-              icon={<ArrowsLeftRight size={17} />}
-              onClick={() => navigate('/rank')}
-            >
-              Compare
-            </Button>
-          </div>
-        </div>
-
-        {/* Deals */}
-        {deals.length > 0 && (
-          <section className="mt-7">
-            <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Deals and coupons</h2>
-            <div className="space-y-2.5">
-              {deals.map((d) => (
-                <DealRow key={d.id} restaurant={r} deal={d} />
-              ))}
-            </div>
-            {!visited && (
-              <p className="mt-2 text-[12px] text-ink-faint">Check in to unlock and redeem coupons.</p>
+            <TierBadge tier={communityTier} className="ring-1 ring-white/60" />
+            {isSlowHourActive(r.slowHour) && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-surface/90 px-2.5 py-1 text-[11px] font-semibold text-ember backdrop-blur-sm">
+                <PulseDot /> Slow-hour now
+              </span>
             )}
-          </section>
-        )}
+          </div>
+        </div>
 
-        {/* Popular dishes */}
-        <section className="mt-7">
-          <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Popular dishes</h2>
-          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 no-scrollbar">
-            {[...r.dishes]
-              .sort((a, b) => b.popularity - a.popularity)
-              .map((d) => (
-                <div key={d.name} className="w-32 shrink-0">
-                  <img
-                    src={photo(d.photoSeed, 280, 280)}
-                    alt={d.name}
-                    className="h-28 w-32 rounded-card bg-surface-2 object-cover"
-                  />
-                  <div className="mt-1.5 text-[12.5px] font-medium leading-tight text-ink">{d.name}</div>
+        {/* Body: single column on mobile, content + sticky action rail on desktop */}
+        <div className="px-4 pb-8 lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8 lg:px-0 lg:pb-0 lg:pt-6">
+          <div className="lg:min-w-0">
+            {/* Title block */}
+            <div className="mt-4 flex items-start justify-between gap-3 lg:mt-0">
+              <div>
+                <h1 className="text-[22px] font-semibold leading-tight tracking-tight text-ink lg:text-[26px]">
+                  {r.name}
+                </h1>
+                <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-ink-soft">
+                  <span>{r.cuisine}</span>
+                  <Dot />
+                  <span className="tnum">{PRICE_LABEL[r.priceTier]}</span>
+                  <Dot />
+                  <MapPin size={13} />
+                  <span className="tnum">{r.distanceMi.toFixed(1)} mi</span>
                 </div>
-              ))}
-          </div>
-        </section>
+              </div>
+              <StarRating value={r.rating} />
+            </div>
 
-        {/* Bites */}
-        {bites.length > 0 && (
-          <section className="mt-7">
-            <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Bites from here</h2>
-            <div className="space-y-3">
-              {bites.map((b) => (
-                <BiteRow key={b.id} bite={b} />
+            <div className="mt-1 flex items-center gap-1.5 text-[13px]">
+              <Clock size={14} className="text-ink-faint" />
+              <span className={cn('font-medium', openStatus(r.hours) === 'Open now' ? 'text-ember' : 'text-ink-soft')}>
+                {openStatus(r.hours)}
+              </span>
+              <span className="text-ink-faint">
+                · {fmtHour(r.hours.open)} to {fmtHour(r.hours.close)}
+              </span>
+              <span className="text-ink-faint">· {r.reviewCount} reviews</span>
+            </div>
+
+            {/* Tags */}
+            <div className="mt-4 flex flex-wrap gap-1.5">
+              {r.tags.map((t) => (
+                <Chip key={t} tone="muted">
+                  {t}
+                </Chip>
               ))}
             </div>
-          </section>
-        )}
 
-        {/* Reviews */}
-        <section className="mt-7">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold tracking-tight text-ink">Reviews</h2>
-            {visited && (
-              <button onClick={() => setReviewOpen(true)} className="text-[13px] font-semibold text-ember">
-                Leave a review
-              </button>
+            {/* Tier + actions live here on mobile, in the sticky rail on desktop */}
+            <div className="mt-5 lg:hidden">
+              <ActionPanel
+                r={r}
+                communityTier={communityTier}
+                myTier={myTier}
+                visited={visited}
+                saved={saved}
+                onCheckIn={() => setCheckInOpen(true)}
+                onReview={() => setReviewOpen(true)}
+              />
+            </div>
+
+            {/* Deals */}
+            {deals.length > 0 && (
+              <section className="mt-7">
+                <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Deals and coupons</h2>
+                <div className="space-y-2.5">
+                  {deals.map((d) => (
+                    <DealRow key={d.id} restaurant={r} deal={d} />
+                  ))}
+                </div>
+                {!visited && (
+                  <p className="mt-2 text-[12px] text-ink-faint">Check in to unlock and redeem coupons.</p>
+                )}
+              </section>
             )}
+
+            {/* Popular dishes */}
+            <section className="mt-7">
+              <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Popular dishes</h2>
+              <div className="-mx-4 flex gap-3 overflow-x-auto px-4 no-scrollbar lg:mx-0 lg:grid lg:grid-cols-4 lg:gap-3 lg:overflow-visible lg:px-0">
+                {[...r.dishes]
+                  .sort((a, b) => b.popularity - a.popularity)
+                  .map((d) => (
+                    <div key={d.name} className="w-32 shrink-0 lg:w-auto">
+                      <img
+                        src={photo(d.photoSeed, 280, 280)}
+                        alt={d.name}
+                        className="h-28 w-32 rounded-card bg-surface-2 object-cover lg:h-32 lg:w-full"
+                      />
+                      <div className="mt-1.5 text-[12.5px] font-medium leading-tight text-ink">{d.name}</div>
+                    </div>
+                  ))}
+              </div>
+            </section>
+
+            {/* Bites */}
+            {bites.length > 0 && (
+              <section className="mt-7">
+                <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Bites from here</h2>
+                <div className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
+                  {bites.map((b) => (
+                    <BiteRow key={b.id} bite={b} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Reviews */}
+            <section className="mt-7">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-base font-semibold tracking-tight text-ink">Reviews</h2>
+                {visited && (
+                  <button onClick={() => setReviewOpen(true)} className="text-[13px] font-semibold text-ember">
+                    Leave a review
+                  </button>
+                )}
+              </div>
+              {reviews.length > 0 ? (
+                <div className="space-y-3">
+                  {reviews.map((rv) => (
+                    <ReviewItem key={rv.id} review={rv} />
+                  ))}
+                </div>
+              ) : (
+                <p className="rounded-card border border-dashed border-line bg-surface-2 px-4 py-6 text-center text-[13px] text-ink-soft">
+                  No reviews yet. Check in and be the first.
+                </p>
+              )}
+            </section>
           </div>
-          {reviews.length > 0 ? (
-            <div className="space-y-3">
-              {reviews.map((rv) => (
-                <ReviewItem key={rv.id} review={rv} />
-              ))}
+
+          {/* Sticky action rail (desktop only) */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-[88px]">
+              <ActionPanel
+                r={r}
+                communityTier={communityTier}
+                myTier={myTier}
+                visited={visited}
+                saved={saved}
+                onCheckIn={() => setCheckInOpen(true)}
+                onReview={() => setReviewOpen(true)}
+              />
             </div>
-          ) : (
-            <p className="rounded-card border border-dashed border-line bg-surface-2 px-4 py-6 text-center text-[13px] text-ink-soft">
-              No reviews yet. Check in and be the first.
-            </p>
-          )}
-        </section>
+          </aside>
+        </div>
       </div>
 
       <CheckInSheet
@@ -281,6 +263,81 @@ function BackButton() {
     <IconButton onClick={() => navigate(-1)} aria-label="Back">
       <CaretLeft size={20} />
     </IconButton>
+  )
+}
+
+function ActionPanel({
+  r,
+  communityTier,
+  myTier,
+  visited,
+  saved,
+  onCheckIn,
+  onReview,
+}: {
+  r: Restaurant
+  communityTier: Tier
+  myTier: Tier | null
+  visited: boolean
+  saved: boolean
+  onCheckIn: () => void
+  onReview: () => void
+}) {
+  const store = useStore()
+  const navigate = useNavigate()
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <TierTile label="Community tier" tier={communityTier} />
+        {myTier ? (
+          <TierTile label="Your tier" tier={myTier} />
+        ) : (
+          <button
+            onClick={() => store.addToTier(r.id)}
+            className="flex flex-col items-start justify-center rounded-card border border-dashed border-line bg-surface-2 px-4 py-3 text-left transition hover:bg-surface active:scale-[0.99]"
+          >
+            <span className="text-[11px] uppercase tracking-wide text-ink-faint">Your tier</span>
+            <span className="mt-0.5 text-sm font-semibold text-ember">Add to tier list</span>
+          </button>
+        )}
+      </div>
+
+      <div className="space-y-2.5">
+        {!visited ? (
+          <Button full size="lg" icon={<ShieldCheck size={18} weight="fill" />} onClick={onCheckIn}>
+            Check in with code
+          </Button>
+        ) : (
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-ctl bg-ember-tint text-sm font-semibold text-ember">
+              <SealCheck size={17} weight="fill" /> Stamp collected
+            </div>
+            <Button className="flex-1" variant="secondary" size="lg" onClick={onReview}>
+              Leave a review
+            </Button>
+          </div>
+        )}
+        <div className="flex items-center gap-2.5">
+          <Button
+            variant="secondary"
+            className="flex-1"
+            icon={<Heart size={17} weight={saved ? 'fill' : 'regular'} className={saved ? 'text-ember' : ''} />}
+            onClick={() => store.toggleSave(r.id)}
+          >
+            {saved ? 'Saved' : 'Save'}
+          </Button>
+          <Button
+            variant="secondary"
+            className="flex-1"
+            icon={<ArrowsLeftRight size={17} />}
+            onClick={() => navigate('/rank')}
+          >
+            Compare
+          </Button>
+        </div>
+      </div>
+    </div>
   )
 }
 

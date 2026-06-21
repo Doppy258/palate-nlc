@@ -7,4 +7,9 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   base: './',
   plugins: [react(), tailwindcss()],
+  // Tailwind is handled by the Vite plugin above. Pin an inline (empty) PostCSS
+  // config so Vite does not auto-load the root postcss.config.mjs, which belongs
+  // to the separate Next.js landing page and references a plugin this app does
+  // not install (@tailwindcss/postcss).
+  css: { postcss: { plugins: [] } },
 })

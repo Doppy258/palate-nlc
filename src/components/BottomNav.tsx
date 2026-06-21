@@ -11,7 +11,7 @@ const TABS = [
 
 export function BottomNav() {
   return (
-    <nav className="z-20 flex items-stretch border-t border-line bg-canvas/90 px-2 pb-[max(env(safe-area-inset-bottom),10px)] pt-2 backdrop-blur-md">
+    <nav className="z-20 flex items-stretch border-t border-line bg-canvas/90 px-2 pb-[max(env(safe-area-inset-bottom),10px)] pt-2 backdrop-blur-md lg:hidden">
       {TABS.map(({ to, label, Icon }) => (
         <NavLink
           key={to}

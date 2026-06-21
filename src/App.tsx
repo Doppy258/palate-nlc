@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { IconContext } from '@phosphor-icons/react'
 import { useStore } from './store/useStore'
-import { PhoneFrame } from './components/PhoneFrame'
+import { AppShell } from './components/AppShell'
 import { BottomNav } from './components/BottomNav'
 import { Toaster } from './components/Toaster'
 import Onboarding from './screens/Onboarding'
@@ -19,10 +19,11 @@ const showNav = (path: string) => NAV_PATHS.includes(path) || path.startsWith('/
 export default function App() {
   const onboarded = useStore((s) => s.onboarded)
   const location = useLocation()
+  const chrome = showNav(location.pathname)
 
   return (
     <IconContext.Provider value={{ size: 18, weight: 'regular' }}>
-      <PhoneFrame>
+      <AppShell chrome={chrome}>
         <div className="flex h-full flex-col">
           <div className="relative min-h-0 flex-1">
             <Routes>
@@ -38,10 +39,10 @@ export default function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
-          {showNav(location.pathname) && <BottomNav />}
+          {chrome && <BottomNav />}
         </div>
         <Toaster />
-      </PhoneFrame>
+      </AppShell>
     </IconContext.Provider>
   )
 }

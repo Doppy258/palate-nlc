@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import { Lightning } from '@phosphor-icons/react'
 import { useStore, type Toast } from '../store/useStore'
-import { useOverlayRoot } from './PhoneFrame'
+import { useOverlayRoot } from './AppShell'
 import { cn } from '../lib/cn'
 
 export function Toaster() {

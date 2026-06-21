@@ -21,7 +21,8 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="flex h-full flex-col overflow-y-auto no-scrollbar px-6 pb-7 pt-7">
+    <div className="flex h-full flex-col overflow-y-auto no-scrollbar px-6 pb-7 pt-7 lg:items-center lg:justify-center lg:px-8">
+      <div className="flex w-full flex-1 flex-col lg:max-w-md lg:flex-none lg:rounded-[24px] lg:border lg:border-line lg:bg-surface lg:p-8 lg:shadow-pop">
       <Reveal>
         <div className="flex items-center gap-2.5">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-[11px] bg-ember text-white">
@@ -68,13 +69,14 @@ export default function Onboarding() {
         ))}
       </div>
 
-      <div className="mt-auto pt-6">
-        <Button full size="lg" onClick={start}>
-          Continue as Lucas
-        </Button>
-        <p className="mt-3 text-center text-[11.5px] text-ink-faint">
-          Demo account · your progress saves on this device
-        </p>
+        <div className="mt-auto pt-6 lg:mt-8 lg:pt-0">
+          <Button full size="lg" onClick={start}>
+            Continue as Lucas
+          </Button>
+          <p className="mt-3 text-center text-[11.5px] text-ink-faint">
+            Demo account · your progress saves on this device
+          </p>
+        </div>
       </div>
     </div>
   )

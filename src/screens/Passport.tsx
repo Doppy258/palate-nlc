@@ -31,7 +31,7 @@ export default function Passport() {
 
   return (
     <Screen appBar={<AppBar title="Passport" subtitle={`${store.name}'s food passport`} />}>
-      <div className="space-y-7 px-4 pb-8 pt-4">
+      <div className="space-y-7 px-4 pb-8 pt-4 lg:mx-auto lg:max-w-5xl lg:px-8 lg:pt-6">
         {/* Level card */}
         <Reveal>
           <div className="overflow-hidden rounded-card border border-line bg-surface shadow-soft">
@@ -87,7 +87,7 @@ export default function Passport() {
             </div>
           </Reveal>
 
-          <div className="grid grid-cols-5 gap-x-2 gap-y-3">
+          <div className="grid grid-cols-5 gap-x-2 gap-y-3 lg:grid-cols-10">
             {RESTAURANTS.map((r) => {
               const got = store.visitedIds.includes(r.id)
               return (
@@ -126,7 +126,7 @@ export default function Passport() {
         {/* Quests */}
         <section>
           <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Quests</h2>
-          <div className="space-y-5">
+          <div className="space-y-5 lg:grid lg:grid-cols-2 lg:gap-x-6 lg:gap-y-6 lg:space-y-0">
             {GROUPS.map((g) => (
               <div key={g.v}>
                 <div className="mb-2 text-[12px] font-medium uppercase tracking-wide text-ink-faint">{g.label}</div>
@@ -143,7 +143,7 @@ export default function Passport() {
         {/* Badges */}
         <section>
           <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Badges</h2>
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-3 gap-2.5 lg:grid-cols-6">
             {BADGES.map((b) => {
               const on = badgeUnlocked(b, store, RESTAURANTS)
               return (

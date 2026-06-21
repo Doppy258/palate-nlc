@@ -114,7 +114,7 @@ export default function Discover() {
         />
       }
     >
-      <div className="px-4 pb-6 pt-3">
+      <div className="px-4 pb-6 pt-3 lg:mx-auto lg:max-w-6xl lg:px-8 lg:pt-5">
         {/* Search */}
         <div className="flex items-center gap-2 rounded-ctl border border-line bg-surface px-3">
           <MagnifyingGlass size={17} className="text-ink-faint" />
@@ -141,14 +141,14 @@ export default function Discover() {
         </div>
 
         {/* Feed */}
-        <div className="mt-3 space-y-3.5">
+        <div className="mt-3 grid gap-3.5 lg:grid-cols-2 xl:grid-cols-3">
           {results.map((r, i) => (
-            <Reveal key={r.id} delay={Math.min(i, 6) * 0.04}>
+            <Reveal key={r.id} delay={Math.min(i, 6) * 0.04} className="h-full">
               <RestaurantCard restaurant={r} communityTier={scoreToTier(community[r.id])} />
             </Reveal>
           ))}
           {results.length === 0 && (
-            <div className="rounded-card border border-dashed border-line bg-surface-2 px-6 py-12 text-center">
+            <div className="rounded-card border border-dashed border-line bg-surface-2 px-6 py-12 text-center lg:col-span-2 xl:col-span-3">
               <h3 className="text-sm font-semibold text-ink">Nothing matches yet</h3>
               <p className="mx-auto mt-1 max-w-[30ch] text-[13px] text-ink-soft">
                 Try loosening a filter or two to see more local spots.

@@ -41,7 +41,7 @@ export default function Bites() {
         />
       }
     >
-      <div className="space-y-4 px-4 pb-8 pt-4">
+      <div className="space-y-4 px-4 pb-8 pt-4 lg:mx-auto lg:max-w-xl lg:pt-6">
         {feed.map((b, i) => (
           <Reveal key={b.id} delay={Math.min(i, 5) * 0.05}>
             <BiteCard bite={b} />

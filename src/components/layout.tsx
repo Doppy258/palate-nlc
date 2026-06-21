@@ -30,13 +30,13 @@ export function AppBar({
   right?: ReactNode
 }) {
   return (
-    <header className="sticky top-0 z-10 flex items-center gap-2.5 border-b border-line bg-canvas/85 px-4 py-3 backdrop-blur-md">
+    <header className="sticky top-0 z-10 flex items-center gap-2.5 border-b border-line bg-canvas/85 px-4 py-3 backdrop-blur-md lg:px-8 lg:py-4">
       {left}
       <div className="min-w-0 flex-1">
-        <h1 className="truncate text-[17px] font-semibold leading-tight tracking-tight text-ink">
+        <h1 className="truncate text-[17px] font-semibold leading-tight tracking-tight text-ink lg:text-[19px]">
           {title}
         </h1>
-        {subtitle && <p className="truncate text-xs text-ink-soft">{subtitle}</p>}
+        {subtitle && <p className="truncate text-xs text-ink-soft lg:text-[13px]">{subtitle}</p>}
       </div>
       {right}
     </header>

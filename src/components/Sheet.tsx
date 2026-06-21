@@ -2,7 +2,9 @@ import type { ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { X } from '@phosphor-icons/react'
-import { useOverlayRoot } from './PhoneFrame'
+import { useIsDesktop } from '../lib/useMediaQuery'
+import { cn } from '../lib/cn'
+import { useOverlayRoot } from './AppShell'
 import { IconButton } from './ui'
 
 /* A bottom sheet scoped to the phone frame. Spring slide-up, dimmed scrim,
@@ -22,13 +24,23 @@ export function BottomSheet({
 }) {
   const root = useOverlayRoot()
   const reduce = useReducedMotion()
+  const desktop = useIsDesktop()
   if (!root) return null
+
+  // Mobile: spring up from the bottom edge. Desktop: a centered dialog that
+  // settles with a small scale, scoped to the content column via the portal.
+  const panelInitial = reduce ? false : desktop ? { opacity: 0, scale: 0.96, y: 8 } : { y: '100%' }
+  const panelAnimate = desktop ? { opacity: 1, scale: 1, y: 0 } : { y: 0 }
+  const panelExit = reduce ? { opacity: 0 } : desktop ? { opacity: 0, scale: 0.97 } : { y: '100%' }
 
   return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
-          className="pointer-events-auto absolute inset-0 z-50 flex flex-col justify-end"
+          className={cn(
+            'pointer-events-auto absolute inset-0 z-50 flex flex-col',
+            desktop ? 'items-center justify-center p-6' : 'justify-end',
+          )}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -36,14 +48,21 @@ export function BottomSheet({
         >
           <div className="absolute inset-0 bg-ink/25 backdrop-blur-[2px]" onClick={onClose} />
           <motion.div
-            className="relative flex max-h-[88%] flex-col overflow-hidden rounded-t-[24px] border-t border-line bg-surface shadow-pop"
-            initial={reduce ? false : { y: '100%' }}
-            animate={{ y: 0 }}
-            exit={reduce ? { opacity: 0 } : { y: '100%' }}
-            transition={{ type: 'spring', stiffness: 380, damping: 38 }}
+            className={cn(
+              'relative flex flex-col overflow-hidden border-line bg-surface shadow-pop',
+              desktop
+                ? 'max-h-[85vh] w-full max-w-lg rounded-[20px] border'
+                : 'max-h-[88%] rounded-t-[24px] border-t',
+            )}
+            initial={panelInitial}
+            animate={panelAnimate}
+            exit={panelExit}
+            transition={{ type: 'spring', stiffness: desktop ? 420 : 380, damping: desktop ? 34 : 38 }}
           >
             <div className="relative px-5 pb-3 pt-5">
-              <span className="absolute left-1/2 top-2 h-1 w-9 -translate-x-1/2 rounded-full bg-line" />
+              {!desktop && (
+                <span className="absolute left-1/2 top-2 h-1 w-9 -translate-x-1/2 rounded-full bg-line" />
+              )}
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-semibold tracking-tight text-ink">{title}</h2>
                 <IconButton onClick={onClose} aria-label="Close">
