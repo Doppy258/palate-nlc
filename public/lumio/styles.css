@@ -1421,3 +1421,9 @@
       .curtain__steam span:nth-child(5){left:80%;animation-delay:4.2s}
       .curtain__steam span:nth-child(6){left:42%;animation-delay:5.5s;width:48px;height:48px}
       @keyframes heroSteam{0%{transform:translateY(50px) scale(.7);opacity:0}18%{opacity:.75}55%{opacity:.45}100%{transform:translateY(-280px) scale(1.7);opacity:0}}
+
+      /* Side garnish — drifting food illustrations in the section margins */
+      .side-garnish{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+      .food-float{position:absolute;display:block;animation:floatBob var(--d,7s) ease-in-out infinite;will-change:transform}
+      @keyframes floatBob{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-22px) rotate(calc(var(--r,0deg) + 5deg))}}
+      @media (max-width:1100px){ .side-garnish{display:none} }
