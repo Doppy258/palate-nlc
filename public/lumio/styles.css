@@ -150,12 +150,12 @@
         object-fit:cover;object-position:center;
         pointer-events:none;
         z-index:1;
-        filter: brightness(1.25) contrast(1.05) sepia(1) hue-rotate(-18deg) saturate(2.1);
+        filter: brightness(0.72) contrast(1.05) sepia(1) hue-rotate(-18deg) saturate(2.0);
       }
       .curtain__tint{
         position:absolute;inset:0;z-index:2;pointer-events:none;
         background:
-          radial-gradient(60% 70% at 50% 30%, rgba(201,154,59,.30) 0%, rgba(42,20,16,0) 65%);
+          radial-gradient(60% 70% at 50% 30%, rgba(201,154,59,.16) 0%, rgba(42,20,16,0) 65%);
         mix-blend-mode:screen;
       }
       .curtain__overlay{
