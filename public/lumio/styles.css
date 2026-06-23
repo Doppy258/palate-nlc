@@ -711,7 +711,7 @@
 
       .conn-list{display:flex;flex-direction:column;gap:10px}
       .conn{
-        border-radius:24px;background:rgba(97,147,221,0.2);
+        border-radius:24px;background:rgba(255,255,255,.14);
         height:88px;padding:10px 20px 10px 10px;
         display:flex;align-items:center;gap:16px;
         position:relative;
@@ -721,19 +721,18 @@
         width:68px;height:68px;border-radius:16px;flex-shrink:0;
         display:grid;place-items:center;overflow:hidden;
       }
-      .conn .badge.stripe{background:rgb(99,91,255);position:relative}
-      .conn .badge.stripe img{width:56px;height:23px;object-fit:contain;filter:brightness(10)}
-      .conn .badge.qb{background:#2CA01C;color:#fff;font-weight:700;font-size:20px;letter-spacing:-0.03em}
-      .conn .badge.mercury{background:#fff}
-      .conn .badge.mercury svg{width:36px;height:36px;color:#0E0A07}
+      .conn .badge.cuisine-1{background:#B8472A;font-size:30px}
+      .conn .badge.cuisine-2{background:#C99A3B;font-size:30px}
+      .conn .badge.cuisine-3{background:#8A3520;font-size:30px}
       .conn .meta{flex:1;min-width:0}
       .conn .kicker{font-size:13px;letter-spacing:-0.02em;color:rgba(255,255,255,.85);margin-bottom:4px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .conn .name{font-size:20px;letter-spacing:-0.04em;font-weight:500;line-height:1.1;color:#fff;white-space:nowrap}
-      .conn .live-pill{font-size:11px;letter-spacing:.1em;font-weight:700;padding:6px 8px;border-radius:100px;background:rgb(35,82,222);color:rgba(254,254,254,.95);white-space:nowrap;flex-shrink:0}
+      .conn .live-pill{font-size:11px;letter-spacing:.08em;font-weight:700;padding:6px 9px;border-radius:100px;background:rgba(255,255,255,.92);color:#B0461F;white-space:nowrap;flex-shrink:0}
+      .conn .live-pill.tier-pill{font-family:var(--font-mono)}
 
 
       .insight-card{
-        border-radius:24px;background:rgba(97,147,221,.2);
+        border-radius:24px;background:rgba(255,255,255,.14);
         padding:12px;display:flex;flex-direction:column;gap:12px;
         flex:0 0 378px;
         position:relative;
@@ -800,16 +799,16 @@
         to{offset-distance:100%}
       }
       .insight-head{display:flex;align-items:center;gap:10px}
-      .insight-head .ic{width:42px;height:42px;border-radius:10px;background:#fff;display:grid;place-items:center;color:#2352DE}
+      .insight-head .ic{width:42px;height:42px;border-radius:10px;background:#fff;display:grid;place-items:center;color:#B8472A}
       .insight-head .ic svg{width:24px;height:24px}
       .insight-head .k{font-size:10px;letter-spacing:.1em;font-weight:700;color:rgba(255,255,255,.75)}
       .insight-head .t{font-size:17px;letter-spacing:-0.04em;font-weight:500;color:#fff;margin-top:4px}
       .insight-msg{font-size:24px;letter-spacing:-0.05em;line-height:1.1;font-weight:500;color:rgba(255,255,255,.95);text-wrap:pretty;padding:6px 4px 0}
       .anomaly{
         align-self:flex-start;display:inline-flex;align-items:center;gap:6px;
-        padding:6px 14px 6px 6px;border-radius:100px;background:#E62A2A;color:#fff;
+        padding:6px 14px 6px 6px;border-radius:100px;background:#C99A3B;color:#fff;
       }
-      .anomaly i{width:22px;height:22px;border-radius:50%;background:#fff;color:#E62A2A;display:grid;place-items:center}
+      .anomaly i{width:22px;height:22px;border-radius:50%;background:#fff;color:#C99A3B;display:grid;place-items:center}
       .anomaly i svg{width:12px;height:12px}
       .anomaly span{font-size:14px;letter-spacing:-0.03em;font-weight:500}
       .saving{
@@ -822,7 +821,7 @@
 
 
       .runway{
-        border-radius:24px;background:rgba(97,147,221,.2);
+        border-radius:24px;background:rgba(255,255,255,.14);
         padding:12px;display:flex;flex-direction:column;gap:12px;
         flex:0 0 378px;
         position:relative;
@@ -830,7 +829,7 @@
       }
       .runway-head{display:flex;align-items:center;gap:10px}
       .runway-head .ic{width:42px;height:42px;border-radius:10px;background:#fff;display:grid;place-items:center}
-      .runway-head .ic svg{width:24px;height:24px;color:#2352DE}
+      .runway-head .ic svg{width:24px;height:24px;color:#B8472A}
       .chart{position:relative;height:148px;margin:6px 0 0}
       .chart svg{width:100%;height:100%;display:block}
       .chart .badge{

@@ -219,8 +219,8 @@
                 function s3Count(now){
                   const t = Math.min(1, (now - startT) / dur);
                   const eased = 1 - Math.pow(1 - t, 3);
-                  const val = Math.round(2400 * eased);
-                  vEl.innerHTML = '$' + val.toLocaleString('en-US') + ' <em>/ mo</em>';
+                  const val = Math.round(9 * eased);
+                  vEl.innerHTML = '$' + val.toLocaleString('en-US') + ' <em>with ID</em>';
                   if (t < 1) requestAnimationFrame(s3Count);
                 }
                 requestAnimationFrame(s3Count);
