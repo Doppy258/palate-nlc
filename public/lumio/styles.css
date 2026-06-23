@@ -1391,3 +1391,15 @@
       .meters .price b{color:rgba(42,42,40,.22)}
       .meters .price b.on{color:var(--ember)}
       .meters .tag{color:rgba(42,42,40,.5)}
+
+      /* Idea #8 — materiality: warm paper grain on light surfaces + plate rings */
+      .sect, .s2, .s3, .s4{
+        background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='pg'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23pg)' opacity='0.04'/></svg>");
+        background-repeat:repeat;
+      }
+      .dashboard, .kpi.rcard{
+        background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='pg2'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23pg2)' opacity='0.025'/></svg>");
+        background-repeat:repeat;
+      }
+      /* warm the s2 concentric "plate" rings */
+      .s2 .ovals .o{border-color:rgba(184,71,42,.07)!important}
