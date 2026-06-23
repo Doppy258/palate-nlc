@@ -745,6 +745,7 @@
       .conn .badge.cuisine-1{background:#B8472A;font-size:30px}
       .conn .badge.cuisine-2{background:#C99A3B;font-size:30px}
       .conn .badge.cuisine-3{background:#8A3520;font-size:30px}
+      .conn .badge .food-glyph{width:62%;height:62%;color:#FBEDE7;display:block}
       .conn .meta{flex:1;min-width:0}
       .conn .kicker{font-size:13px;letter-spacing:-0.02em;color:rgba(255,255,255,.85);margin-bottom:4px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .conn .name{font-size:20px;letter-spacing:-0.04em;font-weight:500;line-height:1.1;color:#fff;white-space:nowrap}
