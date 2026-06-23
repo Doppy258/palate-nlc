@@ -40,7 +40,8 @@
         transition:background-color .4s ease, box-shadow .4s ease, color .4s ease;
       }
       .nav .brand{display:flex;align-items:center;gap:8px;color:#fff}
-      .nav .brand svg{height:21px;width:auto;color:#fff;transition:color .4s ease}
+      .nav .brand svg{height:22px;width:22px;color:#fff;transition:color .4s ease}
+      .nav .brand .brand-name{font-size:18px;font-weight:600;letter-spacing:-0.03em;color:currentColor}
       .nav .links{display:flex;gap:clamp(20px,2.8vw,42px);align-items:center}
       .nav .links a{font-size:clamp(12px,0.95vw,14px);letter-spacing:-0.02em;font-weight:500;color:rgba(254,254,254,.75);transition:color .4s ease}
       .nav .right{display:flex;align-items:center;gap:clamp(12px,1.4vw,20px)}

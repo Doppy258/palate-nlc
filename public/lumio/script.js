@@ -950,16 +950,3 @@
           runIntro();
         }
       })();
-
-
-      document.querySelectorAll('svg use').forEach(u => {
-        u.setAttribute('href', '#lumio-mark');
-      });
-
-
-      document.querySelectorAll('svg use').forEach(u => {
-        const h = u.getAttribute('href') || '';
-        if (h.includes('lumio') && h.includes('#')) {
-          u.setAttribute('href', '#lumio-mark');
-        }
-      });
