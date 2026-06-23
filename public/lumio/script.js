@@ -219,8 +219,8 @@
                 function s3Count(now){
                   const t = Math.min(1, (now - startT) / dur);
                   const eased = 1 - Math.pow(1 - t, 3);
-                  const val = Math.round(2400 * eased);
-                  vEl.innerHTML = '$' + val.toLocaleString('en-US') + ' <em>/ mo</em>';
+                  const val = Math.round(9 * eased);
+                  vEl.innerHTML = '$' + val.toLocaleString('en-US') + ' <em>with ID</em>';
                   if (t < 1) requestAnimationFrame(s3Count);
                 }
                 requestAnimationFrame(s3Count);
@@ -308,11 +308,11 @@
 
           if (open){
             curtain.style.transform = `translateY(100vh)`;
-            curtain.style.boxShadow = `0 54px 114px rgba(8,23,79,.60)`;
+            curtain.style.boxShadow = `0 54px 114px rgba(58,26,16,.60)`;
             if (handle) handle.style.opacity = 0;
           } else {
             curtain.style.transform = `translateY(0)`;
-            curtain.style.boxShadow = `0 24px 60px rgba(8,23,79,.35)`;
+            curtain.style.boxShadow = `0 24px 60px rgba(58,26,16,.35)`;
             if (handle) handle.style.opacity = 1;
           }
         }
@@ -760,9 +760,9 @@
               el.style.opacity     = String(Math.max(0, opacity));
               el.style.filter      = blur > 0 ? `blur(${blur}px)` : '';
               el.style.color       = `rgba(${lightness},${lightness},${lightness},${textAlpha})`;
-              el.style.background  = d < 0.5 ? '#fff' : 'rgba(14,10,7,.025)';
-              el.style.boxShadow   = d < 0.5 ? '0 6px 18px rgba(14,10,7,.08)' : 'none';
-              el.style.borderColor = 'rgba(14,10,7,.13)';
+              el.style.background  = d < 0.5 ? '#fff' : 'rgba(42,42,40,.025)';
+              el.style.boxShadow   = d < 0.5 ? '0 6px 18px rgba(42,42,40,.08)' : 'none';
+              el.style.borderColor = 'rgba(42,42,40,.13)';
               el.style.zIndex      = String(100 - Math.round(d*10));
               el.style.display     = opacity > 0.01 ? '' : 'none';
             });
@@ -950,16 +950,3 @@
           runIntro();
         }
       })();
-
-
-      document.querySelectorAll('svg use').forEach(u => {
-        u.setAttribute('href', '#lumio-mark');
-      });
-
-
-      document.querySelectorAll('svg use').forEach(u => {
-        const h = u.getAttribute('href') || '';
-        if (h.includes('lumio') && h.includes('#')) {
-          u.setAttribute('href', '#lumio-mark');
-        }
-      });
