@@ -1403,3 +1403,10 @@
       }
       /* warm the s2 concentric "plate" rings */
       .s2 .ovals .o{border-color:rgba(184,71,42,.07)!important}
+
+      /* Idea #9 — social proof with faces (friend avatar stack) */
+      .friendbar{display:flex;align-items:center;gap:10px;padding:10px 24px 0}
+      .friendbar .avatars{display:flex}
+      .friendbar .av{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:600;border:2px solid #fff;margin-left:-7px;box-shadow:0 1px 2px rgba(0,0,0,.14)}
+      .friendbar .av:first-child{margin-left:0}
+      .friendbar-txt{font-size:12px;color:rgba(42,42,40,.55);letter-spacing:-0.01em}
