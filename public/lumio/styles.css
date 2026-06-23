@@ -1352,3 +1352,11 @@
       @media (max-width:600px) and (max-height:700px){
         .browser{zoom:.34;bottom:20px}
       }
+
+      /* Idea #3 — orbit as a turntable of ceramic cuisine plates */
+      .orbit{ --tile-h: var(--tile-w); }
+      .orbit-ring .tile{
+        border-radius:50%;
+        box-shadow:0 16px 34px rgba(58,26,16,.16), inset 0 0 0 3px rgba(255,255,255,.22), inset 0 -8px 22px rgba(0,0,0,.12);
+      }
+      .orbit-ring .tile .tile-food{ width:56%; height:56%; color:#FBEDE7; display:block; }
