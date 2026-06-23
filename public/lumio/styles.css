@@ -380,6 +380,24 @@
       .kpi .foot{display:flex;justify-content:space-between;align-items:center;padding:0 6px;margin-top:8px}
       .kpi .qmark{width:14px;height:14px;display:inline-block;vertical-align:middle}
 
+      /* Discover-feed restyle of the reused KPI grid */
+      .kpis{grid-template-columns:1fr;gap:10px}
+      .welcome{font-size:22px}
+      .kpi.rcard{background:#fff;border:1px solid var(--line);padding:0}
+      .kpi.rcard .inner{align-items:center;gap:14px}
+      .kpi.rcard .rmeta{min-width:0;flex:1}
+      .kpi.rcard .rtop{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+      .kpi.rcard .rname{font-size:17px;font-weight:600;letter-spacing:-0.03em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .kpi.rcard .label{font-size:10px;letter-spacing:.08em;color:rgba(42,42,40,.45)}
+      .kpi.rcard .desc{margin-top:6px;font-size:12px;color:rgba(42,42,40,.6)}
+      .kpi.rcard .match{flex-shrink:0;text-align:right}
+      .kpi.rcard .match .val{font-family:var(--font-mono);font-size:30px;letter-spacing:-0.05em;color:var(--ember);line-height:1}
+      .kpi.rcard .match .munit{font-size:10px;letter-spacing:.06em;color:rgba(42,42,40,.45);margin-top:3px}
+      .tier{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:22px;padding:0 7px;border-radius:7px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:-0.02em}
+      .tier-sss{background:#FBF3DB;color:#8A5A00}
+      .tier-s{background:#FBEDE7;color:#B0461F}
+      .tier-a{background:#E1F3FE;color:#1F6C9F}
+
 
       .spacer{height:100vh}
       main.below{position:relative;z-index:1;background:var(--paper)}
