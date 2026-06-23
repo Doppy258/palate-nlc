@@ -26,6 +26,8 @@ import { AppBar, Screen } from '../components/layout'
 import { BottomSheet, Modal } from '../components/Sheet'
 import { Avatar, Button, Chip, IconButton, StarRating, TierBadge } from '../components/ui'
 import { Reveal } from '../components/Reveal'
+import { LocationMap } from '../components/LocationMap'
+import { useUserLocation } from '../hooks/useUserLocation'
 
 export default function RestaurantDetail() {
   const { id } = useParams()
@@ -55,6 +57,7 @@ export default function RestaurantDetail() {
   const deals = restaurantDeals(r)
   const bites = allBites.filter((b) => b.restaurantId === r.id)
   const reviews: Review[] = r.reviews
+  const userLocation = useUserLocation()
 
   return (
     <Screen
@@ -78,10 +81,11 @@ export default function RestaurantDetail() {
       <div className="lg:mx-auto lg:max-w-6xl lg:px-8 lg:pb-10">
         {/* Hero */}
         <div className="relative lg:mt-6 lg:overflow-hidden lg:rounded-card">
-          <img
-            src={photo(r.photoSeeds[0], 1280, 720)}
-            alt={r.name}
-            className="h-52 w-full bg-surface-2 object-cover lg:h-80"
+          <LocationMap
+            lat={r.coordinates.lat}
+            lon={r.coordinates.lon}
+            userLocation={userLocation}
+            className="h-52 w-full lg:h-80"
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/30 to-transparent" />
           <div className="absolute bottom-3 left-4 flex items-center gap-2 lg:bottom-4 lg:left-5">

@@ -18,12 +18,14 @@ import { isOpenNow, isSlowHourActive } from '../lib/time'
 import { photo } from '../lib/photos'
 import { scoreToTier } from '../theme/tokens'
 import { cn } from '../lib/cn'
+import { distanceMi } from '../lib/geo'
 import { MEAL_LABEL } from '../lib/quests'
 import { AppBar, Screen } from '../components/layout'
 import { BottomSheet } from '../components/Sheet'
 import { RestaurantCard } from '../components/RestaurantCard'
 import { Button, Chip } from '../components/ui'
 import { Reveal } from '../components/Reveal'
+import { useUserLocation } from '../hooks/useUserLocation'
 
 type PriceFilter = 'u15' | 'u25' | 'premium' | null
 type SortKey = 'match' | 'rating' | 'reviews' | 'community' | 'friends' | 'closest' | 'hidden' | 'deals'
@@ -84,11 +86,12 @@ export default function Discover() {
 
   const community = useMemo(() => communityScores(restaurants, store), [restaurants, store])
   const matches = useMemo(() => matchScores(restaurants, store, friends), [restaurants, store, friends])
+  const userLocation = useUserLocation()
 
   const results = useMemo(() => {
     const filtered = restaurants.filter((r) => passesFilters(r, filters, store, friends))
-    return sortList(filtered, sort, { matches, community }, friends)
-  }, [restaurants, filters, sort, matches, community, store, friends])
+    return sortList(filtered, sort, { matches, community }, friends, userLocation)
+  }, [restaurants, filters, sort, matches, community, store, friends, userLocation])
 
   const activeCount = countActive(filters)
 
@@ -97,7 +100,7 @@ export default function Discover() {
       appBar={
         <AppBar
           title="Discover"
-          subtitle={`${restaurants.length} local spots near Mill District`}
+          subtitle={`${restaurants.length} local spots near you`}
           right={
             <button
               onClick={() => setShowFilters(true)}
@@ -246,6 +249,7 @@ function sortList(
   sort: SortKey,
   maps: { matches: Record<string, number>; community: Record<string, number> },
   friends: ReturnType<typeof usePalate>['friends'],
+  userLocation?: { lat: number; lon: number } | null,
 ): Restaurant[] {
   const arr = [...list]
   const fSig = (r: Restaurant) => friendSignal(r.id, friends)
@@ -261,7 +265,13 @@ function sortList(
     case 'friends':
       return arr.sort((a, b) => fSig(b) - fSig(a))
     case 'closest':
-      return arr.sort((a, b) => a.distanceMi - b.distanceMi)
+      return arr.sort((a, b) => {
+        if (!userLocation) return a.distanceMi - b.distanceMi
+        return (
+          distanceMi(userLocation.lat, userLocation.lon, a.coordinates.lat, a.coordinates.lon) -
+          distanceMi(userLocation.lat, userLocation.lon, b.coordinates.lat, b.coordinates.lon)
+        )
+      })
     case 'hidden':
       return arr.sort(
         (a, b) =>

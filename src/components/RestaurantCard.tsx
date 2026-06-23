@@ -6,10 +6,11 @@ import { useStore } from '../store/useStore'
 import { dealUnlocked, primaryDeal } from '../lib/deals'
 import { friendsWhoSaved } from '../lib/friends'
 import { isSlowHourActive, openStatus } from '../lib/time'
-import { photo } from '../lib/photos'
 import { PRICE_LABEL } from '../theme/tokens'
 import { cn } from '../lib/cn'
 import { Avatar, Chip, StarRating, TierBadge } from './ui'
+import { LocationMap } from './LocationMap'
+import { useUserLocation } from '../hooks/useUserLocation'
 
 export function RestaurantCard({
   restaurant: r,
@@ -27,6 +28,7 @@ export function RestaurantCard({
   const dealOpen = deal ? dealUnlocked(deal, store) : false
   const savers = friendsWhoSaved(r.id, friends)
   const slowActive = isSlowHourActive(r.slowHour)
+  const userLocation = useUserLocation()
 
   return (
     <article
@@ -34,13 +36,13 @@ export function RestaurantCard({
       className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-card border border-line bg-surface shadow-soft transition hover:shadow-lift active:scale-[0.995]"
     >
       <div className="relative">
-        <img
-          src={photo(r.photoSeeds[0], 720, 420)}
-          alt={r.name}
-          loading="lazy"
-          className="h-40 w-full bg-surface-2 object-cover"
+        <LocationMap
+          lat={r.coordinates.lat}
+          lon={r.coordinates.lon}
+          userLocation={userLocation}
+          zoom={14}
+          className="h-40 w-full"
         />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-ink/30 to-transparent" />
         <div className="absolute left-3 top-3">
           <TierBadge tier={communityTier} className="shadow-soft ring-1 ring-white/60" />
         </div>

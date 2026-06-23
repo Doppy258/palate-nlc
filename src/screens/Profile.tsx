@@ -8,11 +8,12 @@ import { useStore } from '../store/useStore'
 import { levelFromXp } from '../lib/xp'
 import { badgeUnlocked } from '../lib/badges'
 import { personalTiers } from '../lib/ranking'
-import { photo } from '../lib/photos'
 import { TIER_ORDER, TIER_STYLE } from '../theme/tokens'
 import { AppBar, Screen } from '../components/layout'
 import { Avatar, Button, Chip, ProgressBar, TierBadge } from '../components/ui'
 import { Reveal } from '../components/Reveal'
+import { LocationMap } from '../components/LocationMap'
+import { useUserLocation } from '../hooks/useUserLocation'
 import { api } from '../api/client'
 
 const rname = (restaurants: Restaurant[], id: string) =>
@@ -26,6 +27,7 @@ export default function Profile() {
   const { logout } = useAuth()
   const store = useStore()
   const navigate = useNavigate()
+  const userLocation = useUserLocation()
   const level = levelFromXp(store.xp, levels)
   const tiers = personalTiers(restaurants, store)
   const badgesEarned = badges.filter((b) => badgeUnlocked(b, store, restaurants, store.biteCount)).length
@@ -158,7 +160,13 @@ export default function Profile() {
                 <div className="-mx-4 flex gap-3 overflow-x-auto px-4 no-scrollbar lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-3 lg:overflow-visible lg:px-0">
                   {saved.map((r) => (
                     <button key={r.id} onClick={() => navigate(`/r/${r.id}`)} className="w-28 shrink-0 active:scale-95 lg:w-auto">
-                      <img src={photo(r.photoSeeds[0], 240, 200)} alt={r.name} className="h-24 w-28 rounded-card bg-surface-2 object-cover lg:h-28 lg:w-full" />
+                      <LocationMap
+                        lat={r.coordinates.lat}
+                        lon={r.coordinates.lon}
+                        userLocation={userLocation}
+                        zoom={14}
+                        className="h-24 w-28 rounded-card lg:h-28 lg:w-full"
+                      />
                       <div className="mt-1.5 truncate text-[12.5px] font-medium text-ink">{r.name}</div>
                       <div className="text-[11px] text-ink-soft">{r.cuisine}</div>
                     </button>

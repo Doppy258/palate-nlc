@@ -6,12 +6,13 @@ import type { Restaurant, Tier } from '../data/types'
 import { usePalate } from '../providers/PalateProvider'
 import { useStore } from '../store/useStore'
 import { communityTiers, personalTiers } from '../lib/ranking'
-import { photo } from '../lib/photos'
 import { scoreToTier, TIER_ORDER, TIER_STYLE } from '../theme/tokens'
 import { cn } from '../lib/cn'
 import { AppBar, Screen } from '../components/layout'
 import { StarRating, TierBadge } from '../components/ui'
 import { Reveal } from '../components/Reveal'
+import { LocationMap } from '../components/LocationMap'
+import { useUserLocation } from '../hooks/useUserLocation'
 
 type Tab = 'h2h' | 'mine' | 'community'
 
@@ -32,6 +33,7 @@ export default function Rank() {
   const { restaurants } = usePalate()
   const store = useStore()
   const [tab, setTab] = useState<Tab>('h2h')
+  const userLocation = useUserLocation()
 
   const pool = useMemo(() => {
     const ids = new Set([...store.visitedIds, ...store.savedIds, ...Object.keys(store.personalScores)])
@@ -49,9 +51,9 @@ export default function Rank() {
       }
     >
       <div className="px-4 pb-8 pt-3 lg:mx-auto lg:max-w-3xl lg:px-8 lg:pt-6">
-        {tab === 'h2h' && <HeadToHead pool={pool} />}
-        {tab === 'mine' && <TierList tiers={personalTiers(restaurants, store)} includeWTT title="Your local food tier list" />}
-        {tab === 'community' && <TierList tiers={communityTiers(restaurants, store)} title="Community ranking" />}
+        {tab === 'h2h' && <HeadToHead pool={pool} userLocation={userLocation} />}
+        {tab === 'mine' && <TierList tiers={personalTiers(restaurants, store)} includeWTT title="Your local food tier list" userLocation={userLocation} />}
+        {tab === 'community' && <TierList tiers={communityTiers(restaurants, store)} title="Community ranking" userLocation={userLocation} />}
       </div>
     </Screen>
   )
@@ -83,7 +85,7 @@ function Segmented({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
 
 /* ---- Head to head ---- */
 
-function HeadToHead({ pool }: { pool: Restaurant[] }) {
+function HeadToHead({ pool, userLocation }: { pool: Restaurant[]; userLocation: { lat: number; lon: number } | null }) {
   const record = useStore((s) => s.recordComparison)
   const reduce = useReducedMotion()
   const [pair, setPair] = useState<Pair | null>(() => pickPair(pool, null))
@@ -119,13 +121,13 @@ function HeadToHead({ pool }: { pool: Restaurant[] }) {
         >
           <h2 className="text-[19px] font-semibold leading-tight tracking-tight text-ink">{pair.q}</h2>
           <div className="relative mt-4 space-y-3 lg:grid lg:grid-cols-2 lg:gap-5 lg:space-y-0">
-            <MatchCard r={pair.a} onPick={() => choose(pair.a, pair.b)} />
+            <MatchCard r={pair.a} onPick={() => choose(pair.a, pair.b)} userLocation={userLocation} />
             <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
               <span className="tnum inline-flex h-9 w-9 items-center justify-center rounded-full border border-line bg-surface text-[11px] font-bold uppercase text-ink-soft shadow-soft">
                 or
               </span>
             </div>
-            <MatchCard r={pair.b} onPick={() => choose(pair.b, pair.a)} />
+            <MatchCard r={pair.b} onPick={() => choose(pair.b, pair.a)} userLocation={userLocation} />
           </div>
         </motion.div>
       </AnimatePresence>
@@ -136,7 +138,7 @@ function HeadToHead({ pool }: { pool: Restaurant[] }) {
   )
 }
 
-function MatchCard({ r, onPick }: { r: Restaurant; onPick: () => void }) {
+function MatchCard({ r, onPick, userLocation }: { r: Restaurant; onPick: () => void; userLocation: { lat: number; lon: number } | null }) {
   const store = useStore()
   const myScore = store.personalScores[r.id]
   return (
@@ -145,7 +147,13 @@ function MatchCard({ r, onPick }: { r: Restaurant; onPick: () => void }) {
       className="group relative w-full overflow-hidden rounded-card border border-line bg-surface text-left shadow-soft transition hover:border-ember-ring hover:shadow-lift active:scale-[0.99]"
     >
       <div className="flex items-center gap-3.5 p-3">
-        <img src={photo(r.photoSeeds[0], 240, 240)} alt={r.name} className="h-20 w-20 shrink-0 rounded-ctl bg-surface-2 object-cover" />
+        <LocationMap
+          lat={r.coordinates.lat}
+          lon={r.coordinates.lon}
+          userLocation={userLocation}
+          zoom={14}
+          className="h-20 w-20 shrink-0 rounded-ctl"
+        />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h3 className="truncate text-[15px] font-semibold text-ink">{r.name}</h3>
@@ -182,10 +190,12 @@ function TierList({
   tiers,
   title,
   includeWTT,
+  userLocation,
 }: {
   tiers: Record<Tier, Restaurant[]>
   title: string
   includeWTT?: boolean
+  userLocation: { lat: number; lon: number } | null
 }) {
   const order: Tier[] = includeWTT ? [...TIER_ORDER, 'want-to-try'] : TIER_ORDER
   return (
@@ -194,7 +204,7 @@ function TierList({
       <div className="space-y-2.5">
         {order.map((t, i) => (
           <Reveal key={t} delay={i * 0.04}>
-            <TierRow tier={t} restaurants={tiers[t]} />
+             <TierRow tier={t} restaurants={tiers[t]} userLocation={userLocation} />
           </Reveal>
         ))}
       </div>
@@ -202,7 +212,7 @@ function TierList({
   )
 }
 
-function TierRow({ tier, restaurants }: { tier: Tier; restaurants: Restaurant[] }) {
+function TierRow({ tier, restaurants, userLocation }: { tier: Tier; restaurants: Restaurant[]; userLocation: { lat: number; lon: number } | null }) {
   const navigate = useNavigate()
   const s = TIER_STYLE[tier]
   return (
@@ -221,7 +231,13 @@ function TierRow({ tier, restaurants }: { tier: Tier; restaurants: Restaurant[] 
               onClick={() => navigate(`/r/${r.id}`)}
               className="w-16 shrink-0 active:scale-95"
             >
-              <img src={photo(r.photoSeeds[0], 160, 160)} alt={r.name} className="h-16 w-16 rounded-ctl bg-surface-2 object-cover" />
+              <LocationMap
+                lat={r.coordinates.lat}
+                lon={r.coordinates.lon}
+                userLocation={userLocation}
+                zoom={15}
+                className="h-16 w-16 rounded-ctl"
+              />
               <span className="mt-1 block truncate text-[10.5px] leading-tight text-ink-soft">{r.name}</span>
             </button>
           ))}

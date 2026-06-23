@@ -2,41 +2,36 @@ import https from 'node:https'
 import type { Restaurant, Dish, MealType, GroupFit } from '../src/data/types.ts'
 import { getSupabase } from './supabase.ts'
 
-const OVERPASS_URL = 'https://overpass-api.de/api/interpreter'
 const CACHE_TTL = 15 * 60 * 1000 // 15 minutes
 
 // In-memory cache
 let cache: { restaurants: Restaurant[]; ts: number } | null = null
 
-function httpsPost(url: string, body: string): Promise<string> {
+function geoapifyRequest(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const u = new URL(url)
-    const buf = Buffer.from(body)
-    const opts = {
-      hostname: u.hostname,
-      path: u.pathname,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': buf.length,
+    const req = https.request(
+      {
+        hostname: u.hostname,
+        path: u.pathname + u.search,
+        method: 'GET',
+        timeout: 20000,
       },
-      timeout: 30000,
-    }
-    const req = https.request(opts, (res) => {
-      const chunks: Buffer[] = []
-      res.on('data', (c: Buffer) => chunks.push(c))
-      res.on('end', () => {
-        const responseBody = Buffer.concat(chunks).toString()
-        if (!res.statusCode || res.statusCode >= 400) {
-          reject(new Error(`Overpass API error: ${res.statusCode} — ${responseBody.slice(0, 200)}`))
-        } else {
-          resolve(responseBody)
-        }
-      })
-    })
-    req.on('timeout', () => { req.destroy(); reject(new Error('Overpass timeout')) })
+      (res) => {
+        const chunks: Buffer[] = []
+        res.on('data', (c: Buffer) => chunks.push(c))
+        res.on('end', () => {
+          const body = Buffer.concat(chunks).toString()
+          if (!res.statusCode || res.statusCode >= 400) {
+            reject(new Error(`Geoapify error: ${res.statusCode} — ${body.slice(0, 200)}`))
+          } else {
+            resolve(body)
+          }
+        })
+      },
+    )
+    req.on('timeout', () => { req.destroy(); reject(new Error('Geoapify timeout')) })
     req.on('error', reject)
-    req.write(buf)
     req.end()
   })
 }
@@ -145,63 +140,63 @@ function hoursForCuisine(cuisine: string, rand: () => number) {
   return { open: 10 + Math.floor(rand() * 3), close: 20 + Math.floor(rand() * 4) }
 }
 
-function cuisineFromTags(tags: Record<string, string>): string {
-  const cuisine = tags.cuisine ?? tags.cuisine_1 ?? ''
-  if (cuisine) return cuisine.replace(/[_;]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
-  const name = (tags.name ?? '').toLowerCase()
+function cuisineFromName(name: string): string {
+  const lower = name.toLowerCase()
   const mapping: [RegExp, string][] = [
     [/taco|burrito|mexican/, 'Mexican'],
-    [/pizza|italian|pasta/, 'Italian'],
-    [/sushi|ramen|japanese|teriyaki/, 'Japanese'],
+    [/pizza|italian|pasta|trattoria/, 'Italian'],
+    [/sushi|ramen|japanese|teriyaki|izakaya/, 'Japanese'],
     [/pho|vietnamese|banh mi/, 'Vietnamese'],
     [/thai|pad thai|curry/, 'Thai'],
     [/korean|bulgogi|bibimbap/, 'Korean'],
-    [/chinese|dim sum|dumpling/, 'Chinese'],
-    [/burger|grill|steak|bbq|rib/, 'American'],
-    [/cafe|coffee|bakery|bagel/, 'Cafe'],
-    [/indian|tandoori|biryani/, 'Indian'],
-    [/mediterranean|gyro|falafel/, 'Mediterranean'],
-    [/seafood|lobster|oyster/, 'Seafood'],
-    [/breakfast|pancake|waffle/, 'Breakfast'],
+    [/chinese|dim sum|dumpling|szechuan/, 'Chinese'],
+    [/burger|grill|steak|bbq|rib|diner/, 'American'],
+    [/cafe|coffee|bakery|bagel|roast/, 'Cafe'],
+    [/indian|tandoori|biryani|curry/, 'Indian'],
+    [/mediterranean|gyro|falafel|halal/, 'Mediterranean'],
+    [/seafood|lobster|oyster|fish/, 'Seafood'],
+    [/breakfast|pancake|waffle|brunch/, 'Breakfast'],
+    [/taco|mexican|taqueria/, 'Mexican'],
+    [/sushi|japanese|ramen/, 'Japanese'],
+    [/pizza|italian/, 'Italian'],
   ]
   for (const [re, label] of mapping) {
-    if (re.test(name)) return label
+    if (re.test(lower)) return label
   }
   return 'American'
 }
 
-function neighborhoodFromTags(tags: Record<string, string>): string {
-  return tags['addr:suburb'] ?? tags['addr:district'] ?? 'Midtown'
-}
-
-function osmToRestaurant(el: { type: string; id: number; center?: { lat: number; lon: number }; lat?: number; lon?: number; tags: Record<string, string> }): Restaurant {
-  const seed = el.id
+function placeToRestaurant(feature: {
+  properties: Record<string, unknown>
+  geometry?: { coordinates?: number[] }
+}): Restaurant | null {
+  const p = feature.properties
+  const name = (p.name as string) ?? ''
+  if (!name) return null
+  const coords = feature.geometry?.coordinates
+  if (!coords || coords.length < 2) return null
+  const lon = coords[0]
+  const lat = coords[1]
+  const id = 'r-' + ((p.place_id as string) ?? name.toLowerCase().replace(/\s+/g, '-'))
+  const seed = name.length + Math.round(lon * 100)
   const rand = mulberry32(seed)
-  const tags = el.tags
-  const name = tags.name
-  const cuisine = cuisineFromTags(tags)
-  const priceMap = [1, 2, 3]
-  const priceTier = tags['price:category']
-    ? parseInt(tags['price:category']) || priceMap[Math.floor(rand() * 3)]
-    : priceMap[Math.floor(rand() * 3)]
-  const lat = el.lat ?? el.center?.lat ?? 0
-  const lon = el.lon ?? el.center?.lon ?? 0
+  const cuisine = cuisineFromName(name)
   const hours = hoursForCuisine(cuisine, rand)
   const meals = MEAL_BY_CUISINE[cuisine.toLowerCase()] ?? ['lunch', 'dinner']
   const photoId = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-')
-  const id = 'r-' + el.id
 
   return {
     id,
     name,
     cuisine,
-    priceTier,
-    neighborhood: neighborhoodFromTags(tags),
+    priceTier: [1, 2, 3][Math.floor(rand() * 3)],
+    neighborhood: (p.district as string) ?? (p.city as string) ?? 'San Antonio',
     distanceMi: +(rand() * 3 + 0.2).toFixed(1),
+    coordinates: { lat, lon },
     hours,
     rating: +(3.5 + rand() * 1.5).toFixed(1),
     reviewCount: Math.floor(rand() * 200) + 20,
-    tags: [...(TAGS_BY_CUISINE[cuisine.toLowerCase()] ?? ['local', 'casual']), ...(tags.organic ? [] : [])].slice(0, 4),
+    tags: [...(TAGS_BY_CUISINE[cuisine.toLowerCase()] ?? ['local', 'casual'])].slice(0, 4),
     photoSeeds: [`${photoId}-storefront`, `${photoId}-dish`],
     dishes: dishesForCuisine(cuisine, rand),
     deals: [],
@@ -223,16 +218,22 @@ function osmToRestaurant(el: { type: string; id: number; center?: { lat: number;
   }
 }
 
-async function fetchFromOverpass(): Promise<Restaurant[]> {
-  const areaName = 'San Antonio'
-  const query = `[out:json];area[name="${areaName}"]->.searchArea;nwr["amenity"="restaurant"](area.searchArea);out center;`
-  const url = `${OVERPASS_URL}?data=${encodeURIComponent(query)}`
-  console.log(`[places] Fetching restaurants from Overpass API for "${areaName}"...`)
-  const text = await httpsGet(url)
+async function fetchFromGeoapify(): Promise<Restaurant[]> {
+  const apiKey = process.env.GEOAPIFY_API_KEY
+  if (!apiKey) {
+    throw new Error('GEOAPIFY_API_KEY not set in .env — get a free key at https://www.geoapify.com/')
+  }
+  // San Antonio center: 29.4241, -98.4936, radius 10km
+  const url = `https://api.geoapify.com/v2/places?categories=catering.restaurant&filter=circle:-98.4936,29.4241,10000&limit=50&apiKey=${apiKey}`
+  console.log('[places] Fetching restaurants from Geoapify API...')
+  const text = await geoapifyRequest(url)
   const data = JSON.parse(text)
-  const elements = (data.elements ?? []).filter((e: { tags?: Record<string, string> }) => e.tags?.name)
-  console.log(`[places] Overpass returned ${data.elements?.length ?? 0} elements, ${elements.length} with names`)
-  return elements.map(osmToRestaurant)
+  const features = data.features ?? []
+  const restaurants = features
+    .map((f: Record<string, unknown>) => placeToRestaurant(f as Parameters<typeof placeToRestaurant>[0]))
+    .filter((r: Restaurant | null): r is Restaurant => r !== null)
+  console.log(`[places] Geoapify returned ${features.length} features, mapped ${restaurants.length} restaurants`)
+  return restaurants
 }
 
 async function loadFromDb(): Promise<Restaurant[]> {
@@ -250,28 +251,27 @@ async function saveToDb(restaurants: Restaurant[]) {
     const sb = getSupabase()
     await sb.from('restaurants').upsert(restaurants.map((r) => ({ id: r.id, data: r })))
   } catch (e) {
-    console.warn('Failed to cache restaurants to DB:', e)
+    console.warn('[places] Failed to cache restaurants to DB:', e)
   }
 }
 
 export async function getRestaurants(): Promise<Restaurant[]> {
   // Return fresh cache
   if (cache && Date.now() - cache.ts < CACHE_TTL) {
-    console.log(`[places] Returning ${cache.restaurants.length} restaurants from in-memory cache (age: ${Math.round((Date.now() - cache.ts) / 1000)}s)`)
+    console.log(`[places] Returning ${cache.restaurants.length} restaurants from cache (age: ${Math.round((Date.now() - cache.ts) / 1000)}s)`)
     return cache.restaurants
   }
 
-  // Fetch from Overpass
+  // Fetch from Geoapify
   try {
-    const restaurants = await fetchFromOverpass()
-    console.log(`[places] Mapped ${restaurants.length} restaurants, caching for ${CACHE_TTL / 1000}s`)
+    const restaurants = await fetchFromGeoapify()
+    console.log(`[places] Caching ${restaurants.length} restaurants for ${CACHE_TTL / 1000}s`)
     cache = { restaurants, ts: Date.now() }
-    // Persist to DB as fallback for when Overpass is unreachable
     await saveToDb(restaurants)
     console.log(`[places] Persisted ${restaurants.length} restaurants to Supabase`)
     return restaurants
   } catch (e) {
-    console.warn('[places] Overpass fetch failed, using DB cache:', e)
+    console.warn('[places] Geoapify fetch failed, using DB cache:', e)
   }
 
   // Fallback: load from Supabase DB

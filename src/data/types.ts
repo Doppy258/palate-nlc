@@ -65,6 +65,7 @@ export interface Restaurant {
   priceTier: PriceTier
   neighborhood: string
   distanceMi: number
+  coordinates: { lat: number; lon: number }
   /** 24h decimal open/close, e.g. 11 -> 11:00, 22.5 -> 22:30. */
   hours: { open: number; close: number }
   rating: number // out of 5
