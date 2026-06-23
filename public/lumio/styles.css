@@ -1,18 +1,26 @@
 :root{
-        --ink:#0E0A07;
-        --paper:#FEFEFE;
-        --blue:#18498B;
-        --blue-2:#2352DE;
-        --blue-3:#3372D9;
-        --violet:#8669B9;
-        --line:rgba(14,10,7,.07);
-        --line-2:rgba(14,10,7,.05);
-        --muted:rgba(14,10,7,.45);
-        --muted-2:rgba(14,10,7,.55);
-        --muted-3:rgba(14,10,7,.35);
+        --ink:#2A2A28;
+        --paper:#FBFBFA;
+        --surface:#FFFFFF;
+        --ember:#B8472A;
+        --ember-hover:#9F3D22;
+        --ember-tint:#FBEDE7;
+        --ember-ring:#F1D2C5;
+        --amber:#C99A3B;
+        --amber-tint:#FBF3DB;
+        /* legacy names kept so existing rules using them resolve to warm tones */
+        --blue:#B8472A;
+        --blue-2:#B8472A;
+        --blue-3:#C99A3B;
+        --violet:#C99A3B;
+        --line:rgba(42,42,40,.07);
+        --line-2:rgba(42,42,40,.05);
+        --muted:rgba(42,42,40,.45);
+        --muted-2:rgba(42,42,40,.55);
+        --muted-3:rgba(42,42,40,.35);
         --font-sans:'Geist','Aktiv Grotesk Corp','Inter',ui-sans-serif,system-ui,sans-serif;
-        --font-serif:'Instrument Serif','Test Söhne Mono',ui-serif,serif;
-        --font-mono:'Geist Mono','Test Söhne Mono',ui-monospace,monospace;
+        --font-serif:'Instrument Serif',ui-serif,serif;
+        --font-mono:'Geist Mono',ui-monospace,monospace;
       }
       *{box-sizing:border-box}
       html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
