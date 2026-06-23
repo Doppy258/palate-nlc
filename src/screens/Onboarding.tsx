@@ -13,10 +13,11 @@ const HIGHLIGHTS = [
 
 export default function Onboarding() {
   const navigate = useNavigate()
+  const name = useStore((s) => s.name)
   const completeOnboarding = useStore((s) => s.completeOnboarding)
 
-  const start = () => {
-    completeOnboarding()
+  const start = async () => {
+    await completeOnboarding()
     navigate('/discover', { replace: true })
   }
 
@@ -71,10 +72,10 @@ export default function Onboarding() {
 
         <div className="mt-auto pt-6 lg:mt-8 lg:pt-0">
           <Button full size="lg" onClick={start}>
-            Continue as Lucas
+            Continue{name ? ` as ${name}` : ''}
           </Button>
           <p className="mt-3 text-center text-[11.5px] text-ink-faint">
-            Demo account · your progress saves on this device
+            Start exploring local restaurants
           </p>
         </div>
       </div>

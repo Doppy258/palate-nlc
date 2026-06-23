@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   CaretLeft,
@@ -12,7 +12,7 @@ import {
   Trophy,
 } from '@phosphor-icons/react'
 import type { Deal, Restaurant } from '../../data/types'
-import { RESTAURANTS } from '../../data/seed'
+import { usePalate } from '../../providers/PalateProvider'
 import { useStore } from '../../store/useStore'
 import { communityScores } from '../../lib/ranking'
 import { restaurantDeals } from '../../lib/deals'
@@ -20,30 +20,44 @@ import { friendsWhoSaved } from '../../lib/friends'
 import { fmtHour } from '../../lib/time'
 import { scoreToTier } from '../../theme/tokens'
 import { cn } from '../../lib/cn'
-import { FRIENDS } from '../../data/seed'
 import { AppBar, Screen } from '../../components/layout'
 import { BottomSheet } from '../../components/Sheet'
 import { Button, Chip, IconButton, TierBadge } from '../../components/ui'
 import { Reveal } from '../../components/Reveal'
 
 export default function OwnerDashboard() {
+  const { restaurants, friends } = usePalate()
   const navigate = useNavigate()
   const store = useStore()
-  const [rid, setRid] = useState('luna-tacos')
+  const [rid, setRid] = useState('')
   const [dealOpen, setDealOpen] = useState(false)
-  const r = RESTAURANTS.find((x) => x.id === rid)!
 
-  const community = useMemo(() => communityScores(RESTAURANTS, store), [store])
-  const stats = ownerStats(r, store)
+  useEffect(() => {
+    if (!rid && restaurants[0]) setRid(restaurants[0].id)
+  }, [restaurants, rid])
+
+  const r = restaurants.find((x) => x.id === rid)
+
+  const community = useMemo(() => communityScores(restaurants, store), [restaurants, store])
+
+  if (!r) {
+    return (
+      <Screen appBar={<AppBar title="Business view" left={<IconButton onClick={() => navigate('/profile')} aria-label="Back"><CaretLeft size={20} /></IconButton>} />}>
+        <div className="px-4 py-10 text-center text-sm text-ink-soft">No restaurants in the database yet.</div>
+      </Screen>
+    )
+  }
+
+  const stats = ownerStats(r, store, friends)
   const week = useMemo(
     () =>
-      Array.from({ length: 7 }, (_, i) =>
-        Math.round((r.baseViews / 7) * (0.72 + 0.5 * Math.abs(Math.sin((i + 1) * 1.7 + r.name.length)))),
-      ),
-    [r],
+      Array.from({ length: 7 }, (_, i) => {
+        const day = i === 6 ? stats.views : Math.round(stats.views * (0.1 + Math.random() * 0.15))
+        return Math.max(day, 0)
+      }),
+    [r, stats.views],
   )
   const weekMax = Math.max(...week)
-  const ownerDeals = store.ownerDeals[r.id] ?? []
 
   return (
     <Screen
@@ -62,7 +76,7 @@ export default function OwnerDashboard() {
       <div className="px-4 pb-8 pt-3 lg:mx-auto lg:max-w-3xl lg:px-8 lg:pt-6">
         {/* Restaurant switcher */}
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 no-scrollbar">
-          {RESTAURANTS.map((x) => (
+          {restaurants.map((x) => (
             <Chip key={x.id} selected={x.id === rid} onClick={() => setRid(x.id)}>
               {x.name}
             </Chip>
@@ -168,11 +182,11 @@ export default function OwnerDashboard() {
         {/* Live deals */}
         <Block title="Your live deals">
           <div className="space-y-2.5">
-            {[...ownerDeals, ...r.deals].map((d) => (
+            {r.deals.map((d) => (
               <div key={d.id} className="flex items-center gap-2.5 rounded-card border border-line bg-surface px-3.5 py-2.5">
                 <Tag size={16} weight="fill" className="text-ember" />
                 <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">{d.label}</span>
-                {ownerDeals.includes(d) && (
+                {d.id.startsWith('own-') && (
                   <span className="shrink-0 rounded-full bg-ember-tint px-2 py-0.5 text-[10.5px] font-semibold text-ember">
                     Live on Discover
                   </span>
@@ -188,14 +202,18 @@ export default function OwnerDashboard() {
   )
 }
 
-function ownerStats(r: Restaurant, store: ReturnType<typeof useStore.getState>) {
-  const dealIds = new Set(restaurantDeals(r, store).map((d) => d.id))
+function ownerStats(
+  r: Restaurant,
+  store: ReturnType<typeof useStore.getState>,
+  friends: ReturnType<typeof usePalate>['friends'],
+) {
+  const dealIds = new Set(restaurantDeals(r).map((d) => d.id))
   return {
     views: r.baseViews,
-    saves: r.baseSaves + (store.savedIds.includes(r.id) ? 1 : 0) + friendsWhoSaved(r.id, FRIENDS).length,
+    saves: r.baseSaves + (store.savedIds.includes(r.id) ? 1 : 0) + friendsWhoSaved(r.id, friends).length,
     stamps: r.baseStampsCollected + (store.visitedIds.includes(r.id) ? 1 : 0),
     redemptions: r.baseCouponsRedeemed + store.redeemedDealIds.filter((id) => dealIds.has(id)).length,
-    verified: r.baseVerifiedReviews + store.reviews.filter((rv) => rv.restaurantId === r.id && rv.verified).length,
+    verified: r.baseVerifiedReviews,
   }
 }
 

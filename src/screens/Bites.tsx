@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CaretLeft, Heart, MapPin, Plus, Tag } from '@phosphor-icons/react'
 import type { Bite, Restaurant } from '../data/types'
-import { RESTAURANTS, SEED_BITES } from '../data/seed'
+import { usePalate } from '../providers/PalateProvider'
 import { useStore } from '../store/useStore'
 import { primaryDeal, dealUnlocked } from '../lib/deals'
 import { photo } from '../lib/photos'
@@ -13,14 +13,12 @@ import { Avatar, Button, Chip, IconButton } from '../components/ui'
 import { Reveal } from '../components/Reveal'
 
 export default function Bites() {
+  const { restaurants, bites } = usePalate()
   const navigate = useNavigate()
   const store = useStore()
   const [compose, setCompose] = useState(false)
 
-  const feed = useMemo(
-    () => [...store.bites, ...SEED_BITES].sort((a, b) => b.createdAt - a.createdAt),
-    [store.bites],
-  )
+  const feed = useMemo(() => [...bites].sort((a, b) => b.createdAt - a.createdAt), [bites])
 
   return (
     <Screen
@@ -55,8 +53,9 @@ export default function Bites() {
 
 function BiteCard({ bite }: { bite: Bite }) {
   const navigate = useNavigate()
+  const { restaurants } = usePalate()
   const store = useStore()
-  const r = RESTAURANTS.find((x) => x.id === bite.restaurantId)
+  const r = restaurants.find((x) => x.id === bite.restaurantId)
   if (!r) return null
   const saved = store.savedIds.includes(r.id)
   const deal = primaryDeal(r, store)
@@ -123,6 +122,7 @@ function BiteCard({ bite }: { bite: Bite }) {
 const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 
 function ComposeSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { restaurants } = usePalate()
   const postBite = useStore((s) => s.postBite)
   const visitedFirst = useStore((s) => s.visitedIds)
   const [rid, setRid] = useState<string>('')
@@ -133,12 +133,12 @@ function ComposeSheet({ open, onClose }: { open: boolean; onClose: () => void })
 
   // Prefer somewhere the user has actually been, but allow any spot.
   const ordered: Restaurant[] = useMemo(() => {
-    const visited = RESTAURANTS.filter((r) => visitedFirst.includes(r.id))
-    const rest = RESTAURANTS.filter((r) => !visitedFirst.includes(r.id))
+    const visited = restaurants.filter((r) => visitedFirst.includes(r.id))
+    const rest = restaurants.filter((r) => !visitedFirst.includes(r.id))
     return [...visited, ...rest]
-  }, [visitedFirst])
+  }, [restaurants, visitedFirst])
 
-  const selected = RESTAURANTS.find((r) => r.id === rid)
+  const selected = restaurants.find((r) => r.id === rid)
   const suggested = selected ? selected.tags : []
 
   const submit = () => {

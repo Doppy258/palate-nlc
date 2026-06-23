@@ -14,7 +14,7 @@ import {
   Tag,
 } from '@phosphor-icons/react'
 import type { Bite, Restaurant, Review, Tier } from '../data/types'
-import { RESTAURANTS, SEED_BITES } from '../data/seed'
+import { usePalate } from '../providers/PalateProvider'
 import { useStore } from '../store/useStore'
 import { dealRedeemable, dealUnlocked, restaurantDeals } from '../lib/deals'
 import { communityScores } from '../lib/ranking'
@@ -29,14 +29,15 @@ import { Reveal } from '../components/Reveal'
 
 export default function RestaurantDetail() {
   const { id } = useParams()
+  const { restaurants, bites: allBites } = usePalate()
   const store = useStore()
-  const r = RESTAURANTS.find((x) => x.id === id)
+  const r = restaurants.find((x) => x.id === id)
 
   const [checkInOpen, setCheckInOpen] = useState(false)
   const [reviewOpen, setReviewOpen] = useState(false)
   const [success, setSuccess] = useState<null | { slowHour: boolean }>(null)
 
-  const community = useMemo(() => communityScores(RESTAURANTS, store), [store])
+  const community = useMemo(() => communityScores(restaurants, store), [restaurants, store])
 
   if (!r) {
     return (
@@ -51,12 +52,9 @@ export default function RestaurantDetail() {
   const myScore = store.personalScores[r.id]
   const myTier = myScore != null ? scoreToTier(myScore) : null
   const communityTier = scoreToTier(community[r.id])
-  const deals = restaurantDeals(r, store)
-  const bites = [...store.bites, ...SEED_BITES].filter((b) => b.restaurantId === r.id)
-  const reviews: Review[] = [
-    ...store.reviews.filter((rv) => rv.restaurantId === r.id),
-    ...r.reviews,
-  ]
+  const deals = restaurantDeals(r)
+  const bites = allBites.filter((b) => b.restaurantId === r.id)
+  const reviews: Review[] = r.reviews
 
   return (
     <Screen
@@ -470,14 +468,18 @@ function CheckInSheet({
   const [code, setCode] = useState('')
   const [error, setError] = useState('')
 
-  const submit = () => {
+  const submit = async () => {
     if (!human) return setError('Confirm you are dining here.')
-    if (code.trim().toUpperCase() !== r.checkInCode) return setError('That code does not match. Check the sign at the counter.')
-    const { slowHour } = checkIn(r.id)
-    setHuman(false)
-    setCode('')
-    setError('')
-    onSuccess(slowHour)
+    if (code.trim().length === 0) return setError('Enter the restaurant code.')
+    try {
+      const { slowHour } = await checkIn(r.id, code.trim())
+      setHuman(false)
+      setCode('')
+      setError('')
+      onSuccess(slowHour)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Check-in failed')
+    }
   }
 
   return (

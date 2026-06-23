@@ -152,11 +152,8 @@ export interface PersistedUser {
   slowHourVisitIds: string[]
   comparisons: number
   reviews: UserReview[]
-  bites: Bite[]
   redeemedDealIds: string[]
   claimedQuestIds: string[]
-  /** Owner-created deals, keyed by restaurant id, shown live on the consumer side. */
-  ownerDeals: Record<string, Deal[]>
   onboarded: boolean
   ownerMode: boolean
 }

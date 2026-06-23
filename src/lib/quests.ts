@@ -1,11 +1,12 @@
 import type { MealType, PersistedUser, Quest, Restaurant } from '../data/types'
-import { FRIENDS } from '../data/seed'
 
 /** Raw value of the real metric a quest tracks, computed from live user state. */
 export function questValue(
   metric: string,
   user: PersistedUser,
   restaurants: Restaurant[],
+  friendCount = 0,
+  biteCount = 0,
 ): number {
   const byId = (id: string) => restaurants.find((r) => r.id === id)
   const visited = user.visitedIds.map(byId).filter(Boolean) as Restaurant[]
@@ -23,9 +24,9 @@ export function questValue(
     case 'ranked':
       return Object.keys(user.personalScores).length
     case 'bites':
-      return user.bites.length
+      return biteCount
     case 'friends':
-      return FRIENDS.length
+      return friendCount
     case 'slowHourVisits':
       return user.slowHourVisitIds.length
     case 'underdogReviews':
@@ -49,8 +50,10 @@ export function questProgress(
   q: Quest,
   user: PersistedUser,
   restaurants: Restaurant[],
+  friendCount = 0,
+  biteCount = 0,
 ): QuestProgress {
-  const raw = questValue(q.metric, user, restaurants)
+  const raw = questValue(q.metric, user, restaurants, friendCount, biteCount)
   const done = raw >= q.target
   const claimed = user.claimedQuestIds.includes(q.id)
   return {

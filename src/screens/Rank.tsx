@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowsLeftRight, Sparkle } from '@phosphor-icons/react'
 import type { Restaurant, Tier } from '../data/types'
-import { RESTAURANTS } from '../data/seed'
+import { usePalate } from '../providers/PalateProvider'
 import { useStore } from '../store/useStore'
 import { communityTiers, personalTiers } from '../lib/ranking'
 import { photo } from '../lib/photos'
@@ -29,13 +29,14 @@ interface Pair {
 }
 
 export default function Rank() {
+  const { restaurants } = usePalate()
   const store = useStore()
   const [tab, setTab] = useState<Tab>('h2h')
 
   const pool = useMemo(() => {
     const ids = new Set([...store.visitedIds, ...store.savedIds, ...Object.keys(store.personalScores)])
-    return RESTAURANTS.filter((r) => ids.has(r.id))
-  }, [store.visitedIds, store.savedIds, store.personalScores])
+    return restaurants.filter((r) => ids.has(r.id))
+  }, [restaurants, store.visitedIds, store.savedIds, store.personalScores])
 
   return (
     <Screen
@@ -49,8 +50,8 @@ export default function Rank() {
     >
       <div className="px-4 pb-8 pt-3 lg:mx-auto lg:max-w-3xl lg:px-8 lg:pt-6">
         {tab === 'h2h' && <HeadToHead pool={pool} />}
-        {tab === 'mine' && <TierList tiers={personalTiers(RESTAURANTS, store)} includeWTT title="Your local food tier list" />}
-        {tab === 'community' && <TierList tiers={communityTiers(RESTAURANTS, store)} title="Community ranking" />}
+        {tab === 'mine' && <TierList tiers={personalTiers(restaurants, store)} includeWTT title="Your local food tier list" />}
+        {tab === 'community' && <TierList tiers={communityTiers(restaurants, store)} title="Community ranking" />}
       </div>
     </Screen>
   )

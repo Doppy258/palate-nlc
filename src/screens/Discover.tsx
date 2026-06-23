@@ -8,7 +8,7 @@ import {
   Plus,
 } from '@phosphor-icons/react'
 import type { GroupFit, MealType, Restaurant } from '../data/types'
-import { FRIENDS, RESTAURANTS, SEED_BITES } from '../data/seed'
+import { usePalate } from '../providers/PalateProvider'
 import { useStore } from '../store/useStore'
 import { matchScores } from '../lib/match'
 import { communityScores } from '../lib/ranking'
@@ -75,19 +75,20 @@ const ALL_GROUPS: { v: GroupFit; label: string }[] = [
 ]
 
 export default function Discover() {
+  const { restaurants, friends, bites } = usePalate()
   const store = useStore()
   const [filters, setFilters] = useState<Filters>(EMPTY)
   const [sort, setSort] = useState<SortKey>('match')
   const [showFilters, setShowFilters] = useState(false)
   const [showSort, setShowSort] = useState(false)
 
-  const community = useMemo(() => communityScores(RESTAURANTS, store), [store])
-  const matches = useMemo(() => matchScores(RESTAURANTS, store, FRIENDS), [store])
+  const community = useMemo(() => communityScores(restaurants, store), [restaurants, store])
+  const matches = useMemo(() => matchScores(restaurants, store, friends), [restaurants, store, friends])
 
   const results = useMemo(() => {
-    const filtered = RESTAURANTS.filter((r) => passesFilters(r, filters, store))
-    return sortList(filtered, sort, { matches, community })
-  }, [filters, sort, matches, community, store])
+    const filtered = restaurants.filter((r) => passesFilters(r, filters, store, friends))
+    return sortList(filtered, sort, { matches, community }, friends)
+  }, [restaurants, filters, sort, matches, community, store, friends])
 
   const activeCount = countActive(filters)
 
@@ -96,7 +97,7 @@ export default function Discover() {
       appBar={
         <AppBar
           title="Discover"
-          subtitle={`${RESTAURANTS.length} local spots near Mill District`}
+          subtitle={`${restaurants.length} local spots near Mill District`}
           right={
             <button
               onClick={() => setShowFilters(true)}
@@ -176,7 +177,8 @@ export default function Discover() {
 
 function BitesStrip() {
   const navigate = useNavigate()
-  const previews = SEED_BITES.slice(0, 7)
+  const { bites } = usePalate()
+  const previews = bites.slice(0, 7)
   return (
     <div className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 no-scrollbar">
       <button
@@ -211,7 +213,12 @@ function BitesStrip() {
 
 /* ---- filtering + sorting ---- */
 
-function passesFilters(r: Restaurant, f: Filters, store: ReturnType<typeof useStore.getState>) {
+function passesFilters(
+  r: Restaurant,
+  f: Filters,
+  store: ReturnType<typeof useStore.getState>,
+  friends: ReturnType<typeof usePalate>['friends'],
+) {
   if (f.q) {
     const q = f.q.toLowerCase()
     const hit =
@@ -229,7 +236,7 @@ function passesFilters(r: Restaurant, f: Filters, store: ReturnType<typeof useSt
   if (f.hasDeal && !hasActiveDeal(r, store)) return false
   if (f.slowNow && !isSlowHourActive(r.slowHour)) return false
   if (f.openNow && !isOpenNow(r.hours)) return false
-  if (f.friendsSaved && friendsWhoSaved(r.id, FRIENDS).length === 0) return false
+  if (f.friendsSaved && friendsWhoSaved(r.id, friends).length === 0) return false
   if (f.group && !r.groupFit.includes(f.group)) return false
   return true
 }
@@ -238,9 +245,10 @@ function sortList(
   list: Restaurant[],
   sort: SortKey,
   maps: { matches: Record<string, number>; community: Record<string, number> },
+  friends: ReturnType<typeof usePalate>['friends'],
 ): Restaurant[] {
   const arr = [...list]
-  const fSig = (r: Restaurant) => friendSignal(r.id, FRIENDS)
+  const fSig = (r: Restaurant) => friendSignal(r.id, friends)
   switch (sort) {
     case 'match':
       return arr.sort((a, b) => maps.matches[b.id] - maps.matches[a.id])
@@ -300,7 +308,8 @@ function FilterSheet({
   count: number
   store: ReturnType<typeof useStore.getState>
 }) {
-  const cuisines = useMemo(() => Array.from(new Set(RESTAURANTS.map((r) => r.cuisine))).sort(), [])
+  const { restaurants } = usePalate()
+  const cuisines = useMemo(() => Array.from(new Set(restaurants.map((r) => r.cuisine))).sort(), [restaurants])
   const toggleSet = <T,>(set: Set<T>, v: T) => {
     const next = new Set(set)
     next.has(v) ? next.delete(v) : next.add(v)

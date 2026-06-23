@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { CaretRight, Heart, Lock, MapPin, SealCheck, Tag } from '@phosphor-icons/react'
 import type { Restaurant, Tier } from '../data/types'
-import { FRIENDS } from '../data/seed'
+import { usePalate } from '../providers/PalateProvider'
 import { useStore } from '../store/useStore'
 import { dealUnlocked, primaryDeal } from '../lib/deals'
 import { friendsWhoSaved } from '../lib/friends'
@@ -19,12 +19,13 @@ export function RestaurantCard({
   communityTier: Tier
 }) {
   const navigate = useNavigate()
+  const { friends } = usePalate()
   const store = useStore()
   const saved = store.savedIds.includes(r.id)
   const visited = store.visitedIds.includes(r.id)
   const deal = primaryDeal(r, store)
   const dealOpen = deal ? dealUnlocked(deal, store) : false
-  const savers = friendsWhoSaved(r.id, FRIENDS)
+  const savers = friendsWhoSaved(r.id, friends)
   const slowActive = isSlowHourActive(r.slowHour)
 
   return (

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { CheckCircle, Lightning, Lock, Medal, SealCheck, Ticket } from '@phosphor-icons/react'
 import type { QuestGroup } from '../data/types'
-import { BADGES, QUESTS, RESTAURANTS } from '../data/seed'
+import { useBadges, useLevels, usePalate, useQuests } from '../providers/PalateProvider'
 import { useStore } from '../store/useStore'
 import { levelFromXp } from '../lib/xp'
 import { questProgress } from '../lib/quests'
@@ -22,9 +22,13 @@ const GROUPS: { v: QuestGroup; label: string }[] = [
 ]
 
 export default function Passport() {
+  const { restaurants, friends } = usePalate()
+  const quests = useQuests()
+  const badges = useBadges()
+  const levels = useLevels()
   const store = useStore()
   const navigate = useNavigate()
-  const level = levelFromXp(store.xp)
+  const level = levelFromXp(store.xp, levels)
   const stamps = store.visitedIds.length
   const rewardPct = Math.min(100, (stamps / STAMP_REWARD) * 100)
   const rewardDone = stamps >= STAMP_REWARD
@@ -66,7 +70,7 @@ export default function Passport() {
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-base font-semibold tracking-tight text-ink">Stamps</h2>
             <span className="tnum text-[12.5px] text-ink-soft">
-              {stamps}/{RESTAURANTS.length} collected
+              {stamps}/{restaurants.length} collected
             </span>
           </div>
 
@@ -88,7 +92,7 @@ export default function Passport() {
           </Reveal>
 
           <div className="grid grid-cols-5 gap-x-2 gap-y-3 lg:grid-cols-10">
-            {RESTAURANTS.map((r) => {
+            {restaurants.map((r) => {
               const got = store.visitedIds.includes(r.id)
               return (
                 <button
@@ -131,8 +135,8 @@ export default function Passport() {
               <div key={g.v}>
                 <div className="mb-2 text-[12px] font-medium uppercase tracking-wide text-ink-faint">{g.label}</div>
                 <div className="space-y-2.5">
-                  {QUESTS.filter((q) => q.group === g.v).map((q) => (
-                    <QuestRow key={q.id} questId={q.id} />
+                  {quests.filter((q) => q.group === g.v).map((q) => (
+                    <QuestRow key={q.id} questId={q.id} restaurants={restaurants} friendCount={friends.length} />
                   ))}
                 </div>
               </div>
@@ -144,8 +148,8 @@ export default function Passport() {
         <section>
           <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Badges</h2>
           <div className="grid grid-cols-3 gap-2.5 lg:grid-cols-6">
-            {BADGES.map((b) => {
-              const on = badgeUnlocked(b, store, RESTAURANTS)
+            {badges.map((b) => {
+              const on = badgeUnlocked(b, store, restaurants, store.biteCount)
               return (
                 <Reveal key={b.id}>
                   <div
@@ -170,11 +174,20 @@ export default function Passport() {
   )
 }
 
-function QuestRow({ questId }: { questId: string }) {
+function QuestRow({
+  questId,
+  restaurants,
+  friendCount,
+}: {
+  questId: string
+  restaurants: ReturnType<typeof usePalate>['restaurants']
+  friendCount: number
+}) {
   const store = useStore()
   const claim = useStore((s) => s.claimQuest)
-  const quest = QUESTS.find((q) => q.id === questId)!
-  const p = questProgress(quest, store, RESTAURANTS)
+  const quests = useQuests()
+  const quest = quests.find((q) => q.id === questId)!
+  const p = questProgress(quest, store, restaurants, friendCount, store.biteCount)
 
   return (
     <div className="rounded-card border border-line bg-surface p-3.5">
@@ -190,7 +203,7 @@ function QuestRow({ questId }: { questId: string }) {
             <CheckCircle size={16} weight="fill" /> Claimed
           </span>
         ) : p.claimable ? (
-          <Button size="sm" onClick={() => claim(quest.id)}>
+          <Button size="sm" onClick={() => claim(quest.id, quest.title)}>
             Claim
           </Button>
         ) : null}
