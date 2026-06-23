@@ -236,63 +236,11 @@
 
 
               setTimeout(function(){
-                var chart     = s3El.querySelector('.card3.c .chart');
-                var chartLine = chart.querySelector('.chart-line');
-                var clipRect  = chart.querySelector('.chart-clip-rect');
-                var chartDot  = chart.querySelector('.chart-dot');
-                var badge     = chart.querySelector('.badge');
-
-                var lineLen = chartLine.getTotalLength();
-
-
-                var lineDur      = 5400;
-                var DOT_STOP     = 0.65;
-                var BADGE_APPEAR = 0.30;
-
-
-                var startPt = chartLine.getPointAtLength(0);
-                chartDot.style.left = (startPt.x / 280 * 100) + '%';
-                chartDot.style.top  = (startPt.y / 140 * 100) + '%';
-                chartDot.style.opacity = '1';
-
-
-                var BADGE_OFFSET_Y = -30;
-
-                var lineStart = performance.now();
-
-                function animLine(now){
-                  var t = Math.min(1, (now - lineStart) / lineDur);
-
-                  var eased = 1 - Math.pow(1 - t, 3);
-
-
-                  clipRect.setAttribute('width', String(eased * 280));
-
-
-                  var dotProgress = Math.min(eased, DOT_STOP);
-                  var pt = chartLine.getPointAtLength(dotProgress * lineLen);
-                  var dotL = pt.x / 280 * 100;
-                  var dotT = pt.y / 140 * 100;
-                  chartDot.style.left = dotL + '%';
-                  chartDot.style.top  = dotT + '%';
-
-
-                  if (eased >= BADGE_APPEAR){
-                    var bT = Math.min(1, (eased - BADGE_APPEAR) / 0.15);
-                    badge.style.opacity = String(bT);
-                    badge.style.left = dotL + '%';
-                    badge.style.top  = (dotT + BADGE_OFFSET_Y) + '%';
-                  }
-
-                  if (t < 1){
-                    requestAnimationFrame(animLine);
-                  } else {
-
-                    badge.style.opacity   = '1';
-                    badge.style.transform = 'translateX(-50%)';
-                  }
-                }
-                requestAnimationFrame(animLine);
+                // Stamp card: stamp each "to-fill" slot in sequence (replaces the old line chart).
+                var toFill = s3El.querySelectorAll('.card3.c .stampcard .slot.to-fill');
+                toFill.forEach(function(slot, i){
+                  setTimeout(function(){ slot.classList.add('stamped'); }, i * 320);
+                });
               }, 750);
             }, 1300);
           }, lastSubLineEnd);
