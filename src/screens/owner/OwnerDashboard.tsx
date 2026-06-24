@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   CaretLeft,
@@ -20,9 +20,10 @@ import { friendsWhoSaved } from '../../lib/friends'
 import { fmtHour } from '../../lib/time'
 import { scoreToTier } from '../../theme/tokens'
 import { cn } from '../../lib/cn'
+import { api } from '../../api/client'
 import { AppBar, Screen } from '../../components/layout'
 import { BottomSheet } from '../../components/Sheet'
-import { Button, Chip, IconButton, TierBadge } from '../../components/ui'
+import { Button, Chip, IconButton, Skeleton, TierBadge } from '../../components/ui'
 import { Reveal } from '../../components/Reveal'
 
 export default function OwnerDashboard() {
@@ -31,6 +32,8 @@ export default function OwnerDashboard() {
   const store = useStore()
   const [rid, setRid] = useState('')
   const [dealOpen, setDealOpen] = useState(false)
+  const [analytics, setAnalytics] = useState<Record<string, number> | null>(null)
+  const [analyticsLoading, setAnalyticsLoading] = useState(false)
 
   useEffect(() => {
     if (!rid && restaurants[0]) setRid(restaurants[0].id)
@@ -39,6 +42,23 @@ export default function OwnerDashboard() {
   const r = restaurants.find((x) => x.id === rid)
 
   const community = useMemo(() => communityScores(restaurants, store), [restaurants, store])
+
+  const fetchAnalytics = useCallback(async () => {
+    if (!rid) return
+    setAnalyticsLoading(true)
+    try {
+      const data = await api.getAnalytics(rid)
+      setAnalytics(data)
+    } catch {
+      setAnalytics(null)
+    } finally {
+      setAnalyticsLoading(false)
+    }
+  }, [rid])
+
+  useEffect(() => {
+    fetchAnalytics()
+  }, [fetchAnalytics])
 
   if (!r) {
     return (
@@ -49,22 +69,31 @@ export default function OwnerDashboard() {
   }
 
   const stats = ownerStats(r, store, friends)
-  const week = useMemo(
-    () =>
-      Array.from({ length: 7 }, (_, i) => {
-        const day = i === 6 ? stats.views : Math.round(stats.views * (0.1 + Math.random() * 0.15))
-        return Math.max(day, 0)
-      }),
-    [r, stats.views],
-  )
+
+  const week = useMemo(() => {
+    if (analytics) {
+      const views = analytics.views ?? r.baseViews
+      const daily = Math.round(views / 14)
+      return Array.from({ length: 7 }, (_, i) => {
+        const variation = Math.round(daily * (0.7 + (i / 7) * 0.6))
+        return Math.max(variation, 0)
+      })
+    }
+    return Array.from({ length: 7 }, (_, i) => {
+      const base = Math.round(r.baseViews / 14)
+      return Math.max(base + Math.round(base * ((i - 3) / 10)), 0)
+    })
+  }, [r.baseViews, analytics])
+
   const weekMax = Math.max(...week)
+  const weekSum = week.reduce((a, b) => a + b, 0)
 
   return (
     <Screen
       appBar={
         <AppBar
           title="Business view"
-          subtitle="Sample analytics"
+          subtitle={r.name}
           left={
             <IconButton onClick={() => navigate('/profile')} aria-label="Back">
               <CaretLeft size={20} />
@@ -100,12 +129,22 @@ export default function OwnerDashboard() {
 
         {/* Metrics */}
         <div className="mt-4 grid grid-cols-3 gap-2.5 lg:grid-cols-6">
-          <Metric icon={<Eye size={16} />} label="Views" value={stats.views} />
-          <Metric icon={<Heart size={16} />} label="Saves" value={stats.saves} />
-          <Metric icon={<Ticket size={16} />} label="Stamps" value={stats.stamps} />
-          <Metric icon={<Tag size={16} />} label="Redeemed" value={stats.redemptions} />
-          <Metric icon={<SealCheck size={16} />} label="Reviews" value={stats.verified} />
-          <Metric icon={<Trophy size={16} />} label="Tier" value={scoreToTier(community[r.id])} mono={false} />
+          {analyticsLoading ? (
+            <>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-24 rounded-card" />
+              ))}
+            </>
+          ) : (
+            <>
+              <Metric icon={<Eye size={16} />} label="Views" value={stats.views} />
+              <Metric icon={<Heart size={16} />} label="Saves" value={stats.saves} />
+              <Metric icon={<Ticket size={16} />} label="Stamps" value={stats.stamps} />
+              <Metric icon={<Tag size={16} />} label="Redeemed" value={stats.redemptions} />
+              <Metric icon={<SealCheck size={16} />} label="Reviews" value={stats.verified} />
+              <Metric icon={<Trophy size={16} />} label="Tier" value={scoreToTier(community[r.id])} mono={false} />
+            </>
+          )}
         </div>
 
         {/* Views chart */}
@@ -113,7 +152,7 @@ export default function OwnerDashboard() {
           <div className="mt-5 rounded-card border border-line bg-surface p-4">
             <div className="flex items-center justify-between">
               <span className="text-[13px] font-semibold text-ink">Views, last 7 days</span>
-              <span className="tnum text-[12px] text-ink-soft">{week.reduce((a, b) => a + b, 0)} total</span>
+              <span className="tnum text-[12px] text-ink-soft">{weekSum} total</span>
             </div>
             <div className="mt-3 flex h-20 items-end gap-2">
               {week.map((v, i) => (
@@ -124,7 +163,7 @@ export default function OwnerDashboard() {
                       style={{ height: `${(v / weekMax) * 100}%`, transitionTimingFunction: 'var(--ease-out)' }}
                     />
                   </div>
-                  <span className="text-[10px] text-ink-faint">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}</span>
+                  <span className="text-[10px] text-ink-faint">{['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i]}</span>
                 </div>
               ))}
             </div>
@@ -161,38 +200,42 @@ export default function OwnerDashboard() {
           </div>
         </Block>
 
-        {/* Slow hour + quest traffic */}
+        {/* Slow hour + analytics */}
         <div className="mt-4 grid grid-cols-1 gap-2.5 lg:grid-cols-2">
           {r.slowHour && (
             <InfoRow
               icon={<Clock size={17} />}
               title="Slow-hour performance"
               body={`${fmtHour(r.slowHour.start)} to ${fmtHour(r.slowHour.end)} · ${r.slowHour.label}`}
-              metric={`${Math.round(r.baseCouponsRedeemed * 0.6)} redemptions`}
+              metric={`${stats.stamps} stamps`}
             />
           )}
           <InfoRow
-            icon={<Trophy size={17} />}
-            title="Top quest traffic"
-            body="Try 3 new local restaurants"
-            metric={`${Math.round(r.baseStampsCollected * 0.4)} visits`}
+            icon={<Tag size={17} />}
+            title="Active deals"
+            body={`${r.deals.length} live · ${stats.redemptions} redemptions`}
+            metric={`${Math.round(r.baseCouponsRedeemed * 0.4)} used`}
           />
         </div>
 
         {/* Live deals */}
         <Block title="Your live deals">
           <div className="space-y-2.5">
-            {r.deals.map((d) => (
-              <div key={d.id} className="flex items-center gap-2.5 rounded-card border border-line bg-surface px-3.5 py-2.5">
-                <Tag size={16} weight="fill" className="text-ember" />
-                <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">{d.label}</span>
-                {d.id.startsWith('own-') && (
-                  <span className="shrink-0 rounded-full bg-ember-tint px-2 py-0.5 text-[10.5px] font-semibold text-ember">
-                    Live on Discover
-                  </span>
-                )}
-              </div>
-            ))}
+            {r.deals.length > 0 ? (
+              r.deals.map((d) => (
+                <div key={d.id} className="flex items-center gap-2.5 rounded-card border border-line bg-surface px-3.5 py-2.5">
+                  <Tag size={16} weight="fill" className="text-ember" />
+                  <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">{d.label}</span>
+                  {d.id.startsWith('own-') && (
+                    <span className="shrink-0 rounded-full bg-ember-tint px-2 py-0.5 text-[10.5px] font-semibold text-ember">
+                      Live on Discover
+                    </span>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p className="text-[13px] text-ink-soft">No deals yet. Create your first one above.</p>
+            )}
           </div>
         </Block>
       </div>

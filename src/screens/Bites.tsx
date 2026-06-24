@@ -5,11 +5,11 @@ import type { Bite, Restaurant } from '../data/types'
 import { usePalate } from '../providers/PalateProvider'
 import { useStore } from '../store/useStore'
 import { primaryDeal, dealUnlocked } from '../lib/deals'
-import { photo } from '../lib/photos'
+import { dishGradient } from '../lib/photos'
 import { cn } from '../lib/cn'
 import { AppBar, Screen } from '../components/layout'
 import { BottomSheet } from '../components/Sheet'
-import { Avatar, Button, Chip, IconButton } from '../components/ui'
+import { Avatar, Button, Chip, IconButton, Skeleton } from '../components/ui'
 import { Reveal } from '../components/Reveal'
 
 export default function Bites() {
@@ -76,8 +76,16 @@ function BiteCard({ bite }: { bite: Bite }) {
         </span>
       </div>
 
+      {/* Gradient hero with dish initial instead of fake photo */}
       <button onClick={() => navigate(`/r/${r.id}`)} className="block w-full">
-        <img src={photo(bite.photoSeed, 860, 760)} alt={bite.dish} className="h-64 w-full bg-surface-2 object-cover" />
+        <div
+          className="flex h-64 w-full items-center justify-center bg-surface-2"
+          style={{ background: dishGradient(bite.photoSeed, r.cuisine) }}
+        >
+          <span className="select-none text-5xl font-bold text-white/50">
+            {bite.dish.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase()}
+          </span>
+        </div>
       </button>
 
       <div className="p-3.5">
@@ -187,6 +195,16 @@ function ComposeSheet({ open, onClose }: { open: boolean; onClose: () => void })
           placeholder="e.g. Spicy Miso Ramen"
           className="h-11 w-full rounded-ctl border border-line bg-surface px-3.5 text-sm text-ink placeholder:text-ink-faint focus:border-ember focus:outline-none"
         />
+        {dish.trim() && selected && (
+          <div
+            className="mt-2 flex h-24 items-center justify-center overflow-hidden rounded-ctl"
+            style={{ background: dishGradient(slugify(dish), selected.cuisine) }}
+          >
+            <span className="select-none text-2xl font-bold text-white/50">
+              {dish.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase()}
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="mt-4">

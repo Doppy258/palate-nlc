@@ -6,7 +6,7 @@ import { useStore } from '../store/useStore'
 import { levelFromXp } from '../lib/xp'
 import { questProgress } from '../lib/quests'
 import { badgeUnlocked } from '../lib/badges'
-import { photo } from '../lib/photos'
+import { heroGradient } from '../lib/photos'
 import { cn } from '../lib/cn'
 import { AppBar, Screen } from '../components/layout'
 import { Button, ProgressBar } from '../components/ui'
@@ -103,11 +103,14 @@ export default function Passport() {
                   <span className="relative">
                     {got ? (
                       <>
-                        <img
-                          src={photo(r.photoSeeds[0], 120, 120)}
-                          alt={r.name}
-                          className="h-14 w-14 rounded-full object-cover ring-2 ring-ember"
-                        />
+                        <span
+                          className="flex h-14 w-14 items-center justify-center rounded-full ring-2 ring-ember"
+                          style={{ background: heroGradient(r.id, r.cuisine) }}
+                        >
+                          <span className="select-none text-lg font-bold text-white/80">
+                            {r.name.charAt(0)}
+                          </span>
+                        </span>
                         <span className="absolute -bottom-0.5 -right-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-ember text-white ring-2 ring-surface">
                           <SealCheck size={11} weight="fill" />
                         </span>

@@ -9,8 +9,7 @@ import { isSlowHourActive, openStatus } from '../lib/time'
 import { PRICE_LABEL } from '../theme/tokens'
 import { cn } from '../lib/cn'
 import { Avatar, Chip, StarRating, TierBadge } from './ui'
-import { LocationMap } from './LocationMap'
-import { useUserLocation } from '../hooks/useUserLocation'
+import { heroGradient } from '../lib/photos'
 
 export function RestaurantCard({
   restaurant: r,
@@ -28,24 +27,21 @@ export function RestaurantCard({
   const dealOpen = deal ? dealUnlocked(deal, store) : false
   const savers = friendsWhoSaved(r.id, friends)
   const slowActive = isSlowHourActive(r.slowHour)
-  const userLocation = useUserLocation()
 
   return (
     <article
       onClick={() => navigate(`/r/${r.id}`)}
       className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-card border border-line bg-surface shadow-soft transition hover:shadow-lift active:scale-[0.995]"
     >
-      <div className="relative">
-        <LocationMap
-          lat={r.coordinates.lat}
-          lon={r.coordinates.lon}
-          userLocation={userLocation}
-          zoom={14}
-          className="h-40 w-full"
-        />
+      <div className="relative flex items-center justify-center overflow-hidden" style={{ height: 160, background: heroGradient(r.id, r.cuisine) }}>
+        <span className="select-none text-[72px] font-bold leading-none tracking-tight text-white/25">
+          {r.name.charAt(0)}
+        </span>
+
         <div className="absolute left-3 top-3">
           <TierBadge tier={communityTier} className="shadow-soft ring-1 ring-white/60" />
         </div>
+
         {slowActive && (
           <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-surface/90 px-2.5 py-1 text-[11px] font-semibold text-ember backdrop-blur-sm">
             <span className="relative flex h-1.5 w-1.5">
@@ -55,6 +51,7 @@ export function RestaurantCard({
             Slow-hour deal now
           </span>
         )}
+
         <button
           onClick={(e) => {
             e.stopPropagation()

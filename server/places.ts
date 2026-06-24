@@ -71,14 +71,16 @@ const CUISINE_DISHES: Record<string, string[]> = {
 
 const FALLBACK_DISHES = ['Chef Special', 'House Salad', 'Daily Soup', 'Grilled Chicken', 'Pasta of the Day', 'Seasonal Plate', 'Classic Entree', 'Dessert Sampler']
 
-function dishesForCuisine(cuisine: string, rand: () => number): Dish[] {
+function dishesForCuisine(cuisine: string, _rand: () => number, name: string): Dish[] {
   const pool = Object.entries(CUISINE_DISHES).find(([key]) => cuisine.toLowerCase().includes(key))?.[1] ?? FALLBACK_DISHES
-  const count = Math.floor(rand() * 4) + 3
-  const shuffled = [...pool].sort(() => rand() - 0.5)
-  return shuffled.slice(0, count).map((name, i) => ({
-    name,
-    popularity: +(0.5 - i * 0.08 - rand() * 0.06).toFixed(2),
-    photoSeed: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-'),
+  // Deterministic selection based on restaurant name hash: same name → same dishes
+  const nameRand = mulberry32(name.length + name.charCodeAt(0) + (name.charCodeAt(name.length - 1) ?? 0))
+  const count = (nameRand() * 3 + 3) | 0
+  const shuffled = [...pool].sort(() => nameRand() - 0.5)
+  return shuffled.slice(0, count).map((n, i) => ({
+    name: n,
+    popularity: +(0.5 - i * 0.08 - nameRand() * 0.06).toFixed(2),
+    photoSeed: n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-'),
   }))
 }
 
@@ -198,7 +200,7 @@ function placeToRestaurant(feature: {
     reviewCount: Math.floor(rand() * 200) + 20,
     tags: [...(TAGS_BY_CUISINE[cuisine.toLowerCase()] ?? ['local', 'casual'])].slice(0, 4),
     photoSeeds: [`${photoId}-storefront`, `${photoId}-dish`],
-    dishes: dishesForCuisine(cuisine, rand),
+    dishes: dishesForCuisine(cuisine, rand, name),
     deals: [],
     slowHour: {
       start: hours.open + Math.floor((hours.close - hours.open) * 0.35),

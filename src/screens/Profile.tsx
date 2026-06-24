@@ -9,11 +9,10 @@ import { levelFromXp } from '../lib/xp'
 import { badgeUnlocked } from '../lib/badges'
 import { personalTiers } from '../lib/ranking'
 import { TIER_ORDER, TIER_STYLE } from '../theme/tokens'
+import { heroGradient } from '../lib/photos'
 import { AppBar, Screen } from '../components/layout'
 import { Avatar, Button, Chip, ProgressBar, TierBadge } from '../components/ui'
 import { Reveal } from '../components/Reveal'
-import { LocationMap } from '../components/LocationMap'
-import { useUserLocation } from '../hooks/useUserLocation'
 import { api } from '../api/client'
 
 const rname = (restaurants: Restaurant[], id: string) =>
@@ -27,7 +26,6 @@ export default function Profile() {
   const { logout } = useAuth()
   const store = useStore()
   const navigate = useNavigate()
-  const userLocation = useUserLocation()
   const level = levelFromXp(store.xp, levels)
   const tiers = personalTiers(restaurants, store)
   const badgesEarned = badges.filter((b) => badgeUnlocked(b, store, restaurants, store.biteCount)).length
@@ -131,42 +129,61 @@ export default function Profile() {
                   Open <CaretRight size={14} />
                 </button>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {TIER_ORDER.map((t) => (
-                  <div
-                    key={t}
-                    className="flex items-center gap-2 rounded-card border border-line bg-surface px-3 py-2"
-                  >
-                    <TierBadge tier={t} size="sm" />
-                    <span className="tnum text-[13px] font-semibold text-ink">{tiers[t].length}</span>
-                  </div>
-                ))}
-                <div className="flex items-center gap-2 rounded-card border border-line bg-surface px-3 py-2">
-                  <span
-                    className="rounded-md px-1.5 py-0.5 text-[10px] font-semibold"
-                    style={{ background: TIER_STYLE['want-to-try'].bg, color: TIER_STYLE['want-to-try'].fg, boxShadow: `inset 0 0 0 1px ${TIER_STYLE['want-to-try'].ring}` }}
-                  >
-                    WTT
-                  </span>
-                  <span className="tnum text-[13px] font-semibold text-ink">{tiers['want-to-try'].length}</span>
+              <div className="rounded-card border border-line bg-surface p-3.5">
+                <div className="flex flex-wrap gap-2">
+                  {[...TIER_ORDER, 'want-to-try' as const].map((t) => (
+                    <div
+                      key={t}
+                      className="flex items-center gap-2 rounded-md border border-line bg-surface-2 px-2.5 py-1.5"
+                    >
+                      <TierBadge tier={t} size="sm" />
+                      <span className="tnum text-[13px] font-semibold text-ink">{tiers[t].length}</span>
+                    </div>
+                  ))}
                 </div>
+                {/* Tier distribution bar */}
+                {(() => {
+                  const allTiers = [...TIER_ORDER, 'want-to-try' as const]
+                  const total = allTiers.reduce((s, t) => s + tiers[t].length, 0)
+                  if (total === 0) return null
+                  return (
+                    <div className="mt-3 flex h-2 gap-0.5 overflow-hidden rounded-full bg-surface-2">
+                      {allTiers.map((t) => {
+                        const pct = (tiers[t].length / total) * 100
+                        if (pct === 0) return null
+                        return (
+                          <div
+                            key={t}
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{
+                              width: `${pct}%`,
+                              background: TIER_STYLE[t].bg,
+                              boxShadow: `inset 0 0 0 1px ${TIER_STYLE[t].ring}`,
+                            }}
+                          />
+                        )
+                      })}
+                    </div>
+                  )
+                })()}
               </div>
             </section>
 
-            {/* Want to try */}
+            {/* Want to Try */}
             {saved.length > 0 && (
               <section>
                 <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Want to Try</h2>
                 <div className="-mx-4 flex gap-3 overflow-x-auto px-4 no-scrollbar lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-3 lg:overflow-visible lg:px-0">
                   {saved.map((r) => (
                     <button key={r.id} onClick={() => navigate(`/r/${r.id}`)} className="w-28 shrink-0 active:scale-95 lg:w-auto">
-                      <LocationMap
-                        lat={r.coordinates.lat}
-                        lon={r.coordinates.lon}
-                        userLocation={userLocation}
-                        zoom={14}
-                        className="h-24 w-28 rounded-card lg:h-28 lg:w-full"
-                      />
+                      <div
+                        className="flex h-24 w-28 items-center justify-center rounded-card lg:h-28 lg:w-full"
+                        style={{ background: heroGradient(r.id, r.cuisine) }}
+                      >
+                        <span className="select-none text-3xl font-bold text-white/40">
+                          {r.name.charAt(0)}
+                        </span>
+                      </div>
                       <div className="mt-1.5 truncate text-[12.5px] font-medium text-ink">{r.name}</div>
                       <div className="text-[11px] text-ink-soft">{r.cuisine}</div>
                     </button>
