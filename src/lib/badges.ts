@@ -7,6 +7,7 @@ export function badgeUnlocked(
   badge: Badge,
   user: PersistedUser,
   restaurants: Restaurant[],
+  biteCount = 0,
 ): boolean {
   const byId = (id: string) => restaurants.find((r) => r.id === id)
   const visited = user.visitedIds.map(byId).filter(Boolean) as Restaurant[]
@@ -14,7 +15,7 @@ export function badgeUnlocked(
   const need = Number(rhs)
 
   let have = 0
-  if (lhs === 'bites') have = user.bites.length
+  if (lhs === 'bites') have = biteCount
   else if (lhs === 'stamps') have = user.visitedIds.length
   else if (lhs === 'redemptions') have = user.redeemedDealIds.length
   else if (lhs === 'reviews') have = user.reviews.filter((r) => r.verified).length

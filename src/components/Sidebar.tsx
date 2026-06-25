@@ -11,6 +11,7 @@ import {
 } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
 import { useStore } from '../store/useStore'
+import { useLevels } from '../providers/PalateProvider'
 import { levelFromXp } from '../lib/xp'
 import { cn } from '../lib/cn'
 import { Avatar, ProgressBar } from './ui'
@@ -27,7 +28,8 @@ const NAV: { to: string; label: string; Icon: Icon }[] = [
 // the brand, the route list, and a live identity card wired to the same store.
 export function Sidebar({ className }: { className?: string }) {
   const { name, avatarSeed, xp } = useStore()
-  const level = levelFromXp(xp)
+  const levels = useLevels()
+  const level = levelFromXp(xp, levels)
 
   return (
     <aside

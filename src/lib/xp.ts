@@ -1,7 +1,6 @@
 import type { LevelDef } from '../data/types'
-import { LEVELS } from '../data/seed'
 
-// XP rewards for actions that support local restaurants.
+const DEFAULT_LEVELS: LevelDef[] = [{ name: 'Local Newcomer', minXp: 0 }]
 export const XP = {
   save: 5,
   tier: 10,
@@ -24,13 +23,14 @@ export interface LevelInfo {
   xpToNext: number
 }
 
-export function levelFromXp(xp: number): LevelInfo {
+export function levelFromXp(xp: number, levels: LevelDef[] = DEFAULT_LEVELS): LevelInfo {
+  if (!levels || levels.length === 0) levels = DEFAULT_LEVELS
   let i = 0
-  for (let k = 0; k < LEVELS.length; k++) {
-    if (xp >= LEVELS[k].minXp) i = k
+  for (let k = 0; k < levels.length; k++) {
+    if (xp >= levels[k].minXp) i = k
   }
-  const def = LEVELS[i]
-  const next = LEVELS[i + 1]
+  const def = levels[i]
+  const next = levels[i + 1]
   const intoLevel = xp - def.minXp
   const span = next ? next.minXp - def.minXp : 0
   return {

@@ -1,9 +1,9 @@
 import type { Deal, PersistedUser, Restaurant } from '../data/types'
 import { isSlowHourActive } from './time'
 
-/** Base deals plus any the owner has posted live in this session. */
-export function restaurantDeals(r: Restaurant, user: PersistedUser): Deal[] {
-  return [...r.deals, ...(user.ownerDeals[r.id] ?? [])]
+/** All deals for a restaurant (stored on the restaurant row in Supabase). */
+export function restaurantDeals(r: Restaurant): Deal[] {
+  return r.deals
 }
 
 export function dealUnlocked(deal: Deal, user: PersistedUser): boolean {
@@ -12,7 +12,7 @@ export function dealUnlocked(deal: Deal, user: PersistedUser): boolean {
 
 /** The single deal worth surfacing on a card: live slow-hour first, then best unlocked. */
 export function primaryDeal(r: Restaurant, user: PersistedUser): Deal | undefined {
-  const deals = restaurantDeals(r, user)
+  const deals = restaurantDeals(r)
   if (!deals.length) return undefined
   if (isSlowHourActive(r.slowHour)) {
     const slow = deals.find((d) => d.slowHour)
@@ -33,5 +33,5 @@ export function dealRedeemable(deal: Deal, r: Restaurant, user: PersistedUser): 
 }
 
 export function hasActiveDeal(r: Restaurant, user: PersistedUser): boolean {
-  return restaurantDeals(r, user).some((d) => dealUnlocked(d, user))
+  return restaurantDeals(r).some((d) => dealUnlocked(d, user))
 }

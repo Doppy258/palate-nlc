@@ -65,6 +65,7 @@ export interface Restaurant {
   priceTier: PriceTier
   neighborhood: string
   distanceMi: number
+  coordinates: { lat: number; lon: number }
   /** 24h decimal open/close, e.g. 11 -> 11:00, 22.5 -> 22:30. */
   hours: { open: number; close: number }
   rating: number // out of 5
@@ -152,11 +153,8 @@ export interface PersistedUser {
   slowHourVisitIds: string[]
   comparisons: number
   reviews: UserReview[]
-  bites: Bite[]
   redeemedDealIds: string[]
   claimedQuestIds: string[]
-  /** Owner-created deals, keyed by restaurant id, shown live on the consumer side. */
-  ownerDeals: Record<string, Deal[]>
   onboarded: boolean
   ownerMode: boolean
 }

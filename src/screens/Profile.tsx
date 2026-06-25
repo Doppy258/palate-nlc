@@ -1,44 +1,61 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowCounterClockwise, CaretRight, Lightning, Storefront } from '@phosphor-icons/react'
-import type { Friend } from '../data/types'
-import { BADGES, FRIENDS, RESTAURANTS } from '../data/seed'
+import { CaretRight, Lightning, Storefront, SignOut, UserPlus } from '@phosphor-icons/react'
+import type { Friend, Restaurant } from '../data/types'
+import { useBadges, useLevels, usePalate } from '../providers/PalateProvider'
+import { useAuth } from '../providers/AuthProvider'
 import { useStore } from '../store/useStore'
 import { levelFromXp } from '../lib/xp'
 import { badgeUnlocked } from '../lib/badges'
 import { personalTiers } from '../lib/ranking'
-import { photo } from '../lib/photos'
 import { TIER_ORDER, TIER_STYLE } from '../theme/tokens'
+import { heroGradient } from '../lib/photos'
 import { AppBar, Screen } from '../components/layout'
 import { Avatar, Button, Chip, ProgressBar, TierBadge } from '../components/ui'
 import { Reveal } from '../components/Reveal'
+import { api } from '../api/client'
 
-const rname = (id: string) => RESTAURANTS.find((r) => r.id === id)?.name ?? 'a spot'
+const rname = (restaurants: Restaurant[], id: string) =>
+  restaurants.find((r) => r.id === id)?.name ?? 'a spot'
 
 export default function Profile() {
+  const { restaurants, friends } = usePalate()
+  const [pendingCount, setPendingCount] = useState(0)
+  const badges = useBadges()
+  const levels = useLevels()
+  const { logout } = useAuth()
   const store = useStore()
   const navigate = useNavigate()
-  const level = levelFromXp(store.xp)
-  const tiers = personalTiers(RESTAURANTS, store)
-  const badgesEarned = BADGES.filter((b) => badgeUnlocked(b, store, RESTAURANTS)).length
-  const saved = RESTAURANTS.filter((r) => store.savedIds.includes(r.id))
+  const level = levelFromXp(store.xp, levels)
+  const tiers = personalTiers(restaurants, store)
+  const badgesEarned = badges.filter((b) => badgeUnlocked(b, store, restaurants, store.biteCount)).length
+  const saved = restaurants.filter((r) => store.savedIds.includes(r.id))
+
+  useEffect(() => {
+    api.getPendingFriendRequests().then((r) => setPendingCount(r.length)).catch(() => {})
+  }, [])
 
   const favCuisines = useMemo(() => {
     const ids = new Set([...store.visitedIds, ...Object.keys(store.personalScores)])
     const counts: Record<string, number> = {}
-    for (const r of RESTAURANTS) if (ids.has(r.id)) counts[r.cuisine] = (counts[r.cuisine] ?? 0) + 1
+    for (const r of restaurants) if (ids.has(r.id)) counts[r.cuisine] = (counts[r.cuisine] ?? 0) + 1
     return Object.entries(counts)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 4)
       .map(([c]) => c)
-  }, [store.visitedIds, store.personalScores])
+  }, [store.visitedIds, store.personalScores, restaurants])
 
   const stats = [
     { label: 'Stamps', value: store.visitedIds.length },
-    { label: 'Reviews', value: store.reviews.filter((r) => r.verified).length },
-    { label: 'Bites', value: store.bites.length },
+    { label: 'Reviews', value: store.reviewCount },
+    { label: 'Bites', value: store.biteCount },
     { label: 'Quests', value: store.claimedQuestIds.length },
   ]
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login', { replace: true })
+  }
 
   return (
     <Screen
@@ -112,36 +129,61 @@ export default function Profile() {
                   Open <CaretRight size={14} />
                 </button>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {TIER_ORDER.map((t) => (
-                  <div
-                    key={t}
-                    className="flex items-center gap-2 rounded-card border border-line bg-surface px-3 py-2"
-                  >
-                    <TierBadge tier={t} size="sm" />
-                    <span className="tnum text-[13px] font-semibold text-ink">{tiers[t].length}</span>
-                  </div>
-                ))}
-                <div className="flex items-center gap-2 rounded-card border border-line bg-surface px-3 py-2">
-                  <span
-                    className="rounded-md px-1.5 py-0.5 text-[10px] font-semibold"
-                    style={{ background: TIER_STYLE['want-to-try'].bg, color: TIER_STYLE['want-to-try'].fg, boxShadow: `inset 0 0 0 1px ${TIER_STYLE['want-to-try'].ring}` }}
-                  >
-                    WTT
-                  </span>
-                  <span className="tnum text-[13px] font-semibold text-ink">{tiers['want-to-try'].length}</span>
+              <div className="rounded-card border border-line bg-surface p-3.5">
+                <div className="flex flex-wrap gap-2">
+                  {[...TIER_ORDER, 'want-to-try' as const].map((t) => (
+                    <div
+                      key={t}
+                      className="flex items-center gap-2 rounded-md border border-line bg-surface-2 px-2.5 py-1.5"
+                    >
+                      <TierBadge tier={t} size="sm" />
+                      <span className="tnum text-[13px] font-semibold text-ink">{tiers[t].length}</span>
+                    </div>
+                  ))}
                 </div>
+                {/* Tier distribution bar */}
+                {(() => {
+                  const allTiers = [...TIER_ORDER, 'want-to-try' as const]
+                  const total = allTiers.reduce((s, t) => s + tiers[t].length, 0)
+                  if (total === 0) return null
+                  return (
+                    <div className="mt-3 flex h-2 gap-0.5 overflow-hidden rounded-full bg-surface-2">
+                      {allTiers.map((t) => {
+                        const pct = (tiers[t].length / total) * 100
+                        if (pct === 0) return null
+                        return (
+                          <div
+                            key={t}
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{
+                              width: `${pct}%`,
+                              background: TIER_STYLE[t].bg,
+                              boxShadow: `inset 0 0 0 1px ${TIER_STYLE[t].ring}`,
+                            }}
+                          />
+                        )
+                      })}
+                    </div>
+                  )
+                })()}
               </div>
             </section>
 
-            {/* Want to try */}
+            {/* Want to Try */}
             {saved.length > 0 && (
               <section>
                 <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Want to Try</h2>
                 <div className="-mx-4 flex gap-3 overflow-x-auto px-4 no-scrollbar lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-3 lg:overflow-visible lg:px-0">
                   {saved.map((r) => (
                     <button key={r.id} onClick={() => navigate(`/r/${r.id}`)} className="w-28 shrink-0 active:scale-95 lg:w-auto">
-                      <img src={photo(r.photoSeeds[0], 240, 200)} alt={r.name} className="h-24 w-28 rounded-card bg-surface-2 object-cover lg:h-28 lg:w-full" />
+                      <div
+                        className="flex h-24 w-28 items-center justify-center rounded-card lg:h-28 lg:w-full"
+                        style={{ background: heroGradient(r.id, r.cuisine) }}
+                      >
+                        <span className="select-none text-3xl font-bold text-white/40">
+                          {r.name.charAt(0)}
+                        </span>
+                      </div>
                       <div className="mt-1.5 truncate text-[12.5px] font-medium text-ink">{r.name}</div>
                       <div className="text-[11px] text-ink-soft">{r.cuisine}</div>
                     </button>
@@ -155,14 +197,28 @@ export default function Profile() {
           <div className="mt-7 space-y-7 lg:mt-0">
             {/* Friends */}
             <section>
-              <h2 className="mb-3 text-base font-semibold tracking-tight text-ink">Friends</h2>
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-base font-semibold tracking-tight text-ink">Friends</h2>
+                <button
+                  onClick={() => navigate('/friends')}
+                  className="relative inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] font-medium text-ink transition hover:bg-surface-2 active:scale-95"
+                >
+                  <UserPlus size={14} />
+                  Find Friends
+                  {pendingCount > 0 && (
+                    <span className="tnum inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-ember px-1 text-[10px] font-bold text-white">
+                      {pendingCount}
+                    </span>
+                  )}
+                </button>
+              </div>
               <div className="space-y-2.5">
-                {FRIENDS.map((f) => (
+                {friends.map((f) => (
                   <div key={f.id} className="flex items-center gap-3 rounded-card border border-line bg-surface p-3">
                     <Avatar seed={f.avatarSeed} name={f.name} size={40} />
                     <div className="min-w-0 flex-1">
                       <div className="text-[13.5px] font-semibold text-ink">{f.name}</div>
-                      <div className="truncate text-[12px] text-ink-soft">{friendActivity(f)}</div>
+                      <div className="truncate text-[12px] text-ink-soft">{friendActivity(f, restaurants)}</div>
                     </div>
                     <span className="rounded-full bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-ink-soft">Following</span>
                   </div>
@@ -174,15 +230,15 @@ export default function Profile() {
             <div className="flex items-center justify-between rounded-card border border-line bg-surface px-4 py-3.5">
               <div>
                 <div className="text-[13.5px] font-semibold text-ink">Badges earned</div>
-                <div className="tnum text-[12px] text-ink-soft">{badgesEarned} of {BADGES.length}</div>
+                <div className="tnum text-[12px] text-ink-soft">{badgesEarned} of {badges.length}</div>
               </div>
               <button onClick={() => navigate('/passport')} className="inline-flex items-center gap-0.5 text-[13px] font-semibold text-ember">
                 View <CaretRight size={14} />
               </button>
             </div>
 
-            <Button variant="ghost" full icon={<ArrowCounterClockwise size={16} />} onClick={() => store.resetDemo()}>
-              Reset demo data
+            <Button variant="ghost" full icon={<SignOut size={16} />} onClick={handleLogout}>
+              Log out
             </Button>
           </div>
         </div>
@@ -191,9 +247,9 @@ export default function Profile() {
   )
 }
 
-function friendActivity(f: Friend): string {
-  if (f.sTierIds.length) return `Ranked ${rname(f.sTierIds[0])} S tier`
-  if (f.biteRestaurantIds.length) return `Posted a Bite at ${rname(f.biteRestaurantIds[0])}`
-  if (f.savedIds.length) return `Saved ${rname(f.savedIds[0])}`
+function friendActivity(f: Friend, restaurants: Restaurant[]): string {
+  if (f.sTierIds.length) return `Ranked ${rname(restaurants, f.sTierIds[0])} S tier`
+  if (f.biteRestaurantIds.length) return `Posted a Bite at ${rname(restaurants, f.biteRestaurantIds[0])}`
+  if (f.savedIds.length) return `Saved ${rname(restaurants, f.savedIds[0])}`
   return 'New to Palate'
 }

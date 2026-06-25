@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { ForkKnife, Ranking, Tag, Ticket } from '@phosphor-icons/react'
 import { useStore } from '../store/useStore'
-import { photo } from '../lib/photos'
 import { Button } from '../components/ui'
 import { Reveal } from '../components/Reveal'
 
@@ -13,10 +12,11 @@ const HIGHLIGHTS = [
 
 export default function Onboarding() {
   const navigate = useNavigate()
+  const name = useStore((s) => s.name)
   const completeOnboarding = useStore((s) => s.completeOnboarding)
 
-  const start = () => {
-    completeOnboarding()
+  const start = async () => {
+    await completeOnboarding()
     navigate('/discover', { replace: true })
   }
 
@@ -33,13 +33,13 @@ export default function Onboarding() {
       </Reveal>
 
       <Reveal delay={0.05} className="mt-5">
-        <div className="relative overflow-hidden rounded-[20px]">
-          <img
-            src={photo('palate-onboarding-table-spread', 760, 620)}
-            alt="A shared table of local dishes"
-            className="h-44 w-full bg-surface-2 object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/35 to-transparent" />
+        <div
+          className="flex h-44 items-center justify-center overflow-hidden rounded-[20px]"
+          style={{ background: 'linear-gradient(135deg, #B8472A 0%, #e85d2c 50%, #f4a460 100%)' }}
+        >
+          <span className="select-none text-[80px] font-bold leading-none tracking-tight text-white/15">
+            <ForkKnife size={64} weight="thin" className="text-white/30" />
+          </span>
         </div>
       </Reveal>
 
@@ -71,10 +71,10 @@ export default function Onboarding() {
 
         <div className="mt-auto pt-6 lg:mt-8 lg:pt-0">
           <Button full size="lg" onClick={start}>
-            Continue as Lucas
+            Continue{name ? ` as ${name}` : ''}
           </Button>
           <p className="mt-3 text-center text-[11.5px] text-ink-faint">
-            Demo account · your progress saves on this device
+            Start exploring local restaurants
           </p>
         </div>
       </div>

@@ -42,6 +42,9 @@ coverage
 *.sln
 *.sw?
 
-# OS files
-.DS_Store
-Thumbs.db
+# Database
+server/data.json
+
+# Environment
+.env
+.env.local

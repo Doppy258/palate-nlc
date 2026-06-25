@@ -672,6 +672,22 @@ export const LEVELS: LevelDef[] = [
   { name: 'Local Food Legend', minXp: 1800 },
 ]
 
+// Demo user bite — stored in the bites table at seed time, not on the user row.
+export const SEED_USER_BITES: Bite[] = [
+  {
+    id: 'u-bite-1',
+    restaurantId: 'crumb',
+    author: 'Lucas',
+    avatarSeed: 'lucas',
+    photoSeed: 'morning-bun',
+    dish: 'Morning Bun',
+    caption: 'Flaky, citrusy, gone in four bites. Worth the early alarm.',
+    rating: 9.2,
+    tags: ['best dessert', 'brunch'],
+    createdAt: ago(9),
+  },
+]
+
 // Demo user. Seeded so the app is alive on first open, but Luna Tacos is left
 // un-stamped so the signature demo can collect its stamp live. XP 690 sits just
 // under the Local Champion threshold (750), so the demo flow levels him up.
@@ -696,23 +712,8 @@ export const INITIAL_USER: PersistedUser = {
     { id: 'u-rev-2', restaurantId: 'crumb', author: 'Lucas', avatarSeed: 'lucas', rating: 4.5, text: 'The brown butter cookie lives up to the hype. Get there before noon.', date: '3 weeks ago', verified: true, tags: ['best dessert'] },
     { id: 'u-rev-3', restaurantId: 'corner-bird', author: 'Lucas', avatarSeed: 'lucas', rating: 4, text: 'Reliable sandwich, fast service. Solid weekday lunch.', date: '1 month ago', verified: true, tags: ['quick lunch', 'great service'] },
   ],
-  bites: [
-    {
-      id: 'u-bite-1',
-      restaurantId: 'crumb',
-      author: 'Lucas',
-      avatarSeed: 'lucas',
-      photoSeed: 'morning-bun',
-      dish: 'Morning Bun',
-      caption: 'Flaky, citrusy, gone in four bites. Worth the early alarm.',
-      rating: 9.2,
-      tags: ['best dessert', 'brunch'],
-      createdAt: ago(9),
-    },
-  ],
   redeemedDealIds: ['bean-d1'],
   claimedQuestIds: ['q-follow-3'],
-  ownerDeals: {},
   onboarded: false,
   ownerMode: false,
 }

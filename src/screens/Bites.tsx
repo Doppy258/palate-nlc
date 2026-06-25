@@ -2,25 +2,23 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CaretLeft, Heart, MapPin, Plus, Tag } from '@phosphor-icons/react'
 import type { Bite, Restaurant } from '../data/types'
-import { RESTAURANTS, SEED_BITES } from '../data/seed'
+import { usePalate } from '../providers/PalateProvider'
 import { useStore } from '../store/useStore'
 import { primaryDeal, dealUnlocked } from '../lib/deals'
-import { photo } from '../lib/photos'
+import { dishGradient } from '../lib/photos'
 import { cn } from '../lib/cn'
 import { AppBar, Screen } from '../components/layout'
 import { BottomSheet } from '../components/Sheet'
-import { Avatar, Button, Chip, IconButton } from '../components/ui'
+import { Avatar, Button, Chip, IconButton, Skeleton } from '../components/ui'
 import { Reveal } from '../components/Reveal'
 
 export default function Bites() {
+  const { restaurants, bites } = usePalate()
   const navigate = useNavigate()
   const store = useStore()
   const [compose, setCompose] = useState(false)
 
-  const feed = useMemo(
-    () => [...store.bites, ...SEED_BITES].sort((a, b) => b.createdAt - a.createdAt),
-    [store.bites],
-  )
+  const feed = useMemo(() => [...bites].sort((a, b) => b.createdAt - a.createdAt), [bites])
 
   return (
     <Screen
@@ -55,8 +53,9 @@ export default function Bites() {
 
 function BiteCard({ bite }: { bite: Bite }) {
   const navigate = useNavigate()
+  const { restaurants } = usePalate()
   const store = useStore()
-  const r = RESTAURANTS.find((x) => x.id === bite.restaurantId)
+  const r = restaurants.find((x) => x.id === bite.restaurantId)
   if (!r) return null
   const saved = store.savedIds.includes(r.id)
   const deal = primaryDeal(r, store)
@@ -77,8 +76,16 @@ function BiteCard({ bite }: { bite: Bite }) {
         </span>
       </div>
 
+      {/* Gradient hero with dish initial instead of fake photo */}
       <button onClick={() => navigate(`/r/${r.id}`)} className="block w-full">
-        <img src={photo(bite.photoSeed, 860, 760)} alt={bite.dish} className="h-64 w-full bg-surface-2 object-cover" />
+        <div
+          className="flex h-64 w-full items-center justify-center bg-surface-2"
+          style={{ background: dishGradient(bite.photoSeed, r.cuisine) }}
+        >
+          <span className="select-none text-5xl font-bold text-white/50">
+            {bite.dish.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase()}
+          </span>
+        </div>
       </button>
 
       <div className="p-3.5">
@@ -123,6 +130,7 @@ function BiteCard({ bite }: { bite: Bite }) {
 const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 
 function ComposeSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { restaurants } = usePalate()
   const postBite = useStore((s) => s.postBite)
   const visitedFirst = useStore((s) => s.visitedIds)
   const [rid, setRid] = useState<string>('')
@@ -133,12 +141,12 @@ function ComposeSheet({ open, onClose }: { open: boolean; onClose: () => void })
 
   // Prefer somewhere the user has actually been, but allow any spot.
   const ordered: Restaurant[] = useMemo(() => {
-    const visited = RESTAURANTS.filter((r) => visitedFirst.includes(r.id))
-    const rest = RESTAURANTS.filter((r) => !visitedFirst.includes(r.id))
+    const visited = restaurants.filter((r) => visitedFirst.includes(r.id))
+    const rest = restaurants.filter((r) => !visitedFirst.includes(r.id))
     return [...visited, ...rest]
-  }, [visitedFirst])
+  }, [restaurants, visitedFirst])
 
-  const selected = RESTAURANTS.find((r) => r.id === rid)
+  const selected = restaurants.find((r) => r.id === rid)
   const suggested = selected ? selected.tags : []
 
   const submit = () => {
@@ -187,6 +195,16 @@ function ComposeSheet({ open, onClose }: { open: boolean; onClose: () => void })
           placeholder="e.g. Spicy Miso Ramen"
           className="h-11 w-full rounded-ctl border border-line bg-surface px-3.5 text-sm text-ink placeholder:text-ink-faint focus:border-ember focus:outline-none"
         />
+        {dish.trim() && selected && (
+          <div
+            className="mt-2 flex h-24 items-center justify-center overflow-hidden rounded-ctl"
+            style={{ background: dishGradient(slugify(dish), selected.cuisine) }}
+          >
+            <span className="select-none text-2xl font-bold text-white/50">
+              {dish.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase()}
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="mt-4">
